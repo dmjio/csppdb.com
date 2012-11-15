@@ -1,15 +1,17 @@
-"""
-Flask Documentation:     http://flask.pocoo.org/docs/
-Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
-Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
-
-This file creates your application.
-"""
-
 import os
 from flask import Flask, render_template, request, redirect, url_for
+from flaskext.mysql import MySQL
 
 app = Flask(__name__)
+mysql = MySQL()
+mysql.init_app(app)
+
+MYSQL_DATABASE_HOST = 'localhost'
+MYSQL_DATABASE_PORT = 3306
+MYSQL_DATABASE_USER = 'root'
+MYSQL_DATABASE_PASSWORD = None
+MYSQL_DATABASE_DB   = 'Twitter'
+MYSQL_DATABASE_CHARSET  = 'utf-8'
 
 if 'SECRET_KEY' in os.environ:
     app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
