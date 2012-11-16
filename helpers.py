@@ -1,0 +1,2 @@
+stringify = lambda x : "'" + x + "'"
+

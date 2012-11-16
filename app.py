@@ -81,6 +81,7 @@ def about():
 def login():
     return render_template('login.html')
 
+
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
     """Registers the user."""
@@ -98,10 +99,16 @@ def register():
         elif get_user_id(request.form['username']) is not None:
             error = 'The username is already taken'
         else:
-            g.db.cursor().execute('''insert into user (
-              username, email, password) values (?, ?, ?)''',
-              [request.form['username'], request.form['email'],
-               generate_password_hash(request.form['password'])])
+            username = request.form['username']
+            email = request.form['email']
+            password = generate_password_hash(request.form['password'])
+
+            username = stringify(username)
+            email = stringify(email)
+            password = stringify(password)
+
+            g.db.cursor().execute("insert into user (username, email, password) values (%s, %s, %s)" % (username, email, password,))
+
             g.db.commit()
             flash('You were successfully registered and can login now')
             return redirect(url_for('login'))
@@ -130,8 +137,7 @@ def add_header(response):
 
 def get_user_id(username):
     """Convenience method to look up the id for a username."""
-    rv = query_db('select user_id from user where username = ?',
-                  [username], one=True)
+    rv = g.db.cursor().execute('select username from users where username = ' + "'" + username + "'", one=True)
     return rv[0] if rv else None
 
 

@@ -49,9 +49,9 @@
         {% if error %}
         <div class=error><strong>Error:</strong> {{ error }}</div>
         {% endif %}
-        <input type="text" class="input-block-level" placeholder="username" value="{{ request.form.username }}">
-        <input type="text" class="input-block-level" placeholder="email address" value="{{ request.form.email }}">
-        <input type="password" class="input-block-level" placeholder="password" value="{{ request.form.password }}">
+        <input type="text" name="username" class="input-block-level" placeholder="username" value="{{ request.form.username }}">
+        <input type="text" name="email" class="input-block-level" placeholder="email address" value="{{ request.form.email }}">
+        <input type="password" name="password" class="input-block-level" placeholder="password" value="{{ request.form.password }}">
         <label class="checkbox">
           <input type="checkbox" value="remember-me"> Remember me
         </label>
