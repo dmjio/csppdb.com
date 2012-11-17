@@ -5,10 +5,10 @@ from flaskext.mysql import MySQL
 from contextlib import closing
 from hashlib import md5
 from datetime import datetime
-import time
-import os
+from helpers import *
 from werkzeug import check_password_hash, generate_password_hash
 import config
+
 
 app = Flask(__name__)
 mysql = MySQL()
@@ -21,14 +21,13 @@ app.config['MYSQL_DATABASE_DB'] = config.MYSQL_DATABASE_DB
 
 mysql.init_app(app)
 
-if 'SECRET_KEY' in os.environ:
-    app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
-else:
-    app.config['SECRET_KEY'] = os.urandom(24)
+if 'SECRET_KEY' in os.environ: app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+else: app.config['SECRET_KEY'] = os.urandom(24)
 
 ###
 # Routing for your application.
 ###
+
 
 def init_db():
     with closing(connect_db()) as db:
@@ -36,28 +35,20 @@ def init_db():
             db.cursor().execute(f.read())
         db.commit()
 
-
-def connect_db():
-    return mysql.connect()
+def connect_db(): return mysql.connect()
 
 @app.before_request
 def before_request():
-    g.db = connect_db()
     g.user = None
     if 'userid' in session:
-        g.user = query_db('select * from user where userid = ?', [session['userid']], one=True)
-    
+        g.user = get_user_by_id(g, session['userid'])
+
 
 @app.teardown_request
 def teardown_request(exception):
     if hasattr(g, 'db'):
         g.db.close()
 
-def query_db(query, args=(), one=False):
-    cur = g.db.cursor().execute(query, args)
-    rv = [dict((cur.description[idx][0], value)
-               for idx, value in enumerate(row)) for row in cur.fetchall()]
-    return (rv[0] if rv else None) if one else rv
 
 def format_datetime(timestamp):
     """Format a timestamp for display."""
@@ -74,19 +65,46 @@ def home():
     return render_template('home.html')
 
 @app.route('/about/') 
-def about(): 
-    return render_template('about.html')
+def about(): return render_template('about.html')
 
-@app.route('/login/')
+@app.route('/logout')
+def logout():
+    """Logs the user out."""
+    g.user = None
+    session['userid'] = None
+    flash('You were logged out')
+    return redirect(url_for('home'))
+
+@app.route('/login/', methods=['GET', 'POST'])
 def login():
-    return render_template('login.html')
+    """Logs the user in."""
+    if g.user: return redirect(url_for('main'))
+    error = None
+    if request.method == 'POST':
+        user = get_user(g, request.form['username'])
+        if user is None:
+            error = 'Invalid username'
+        elif not check_password_hash(user.password, request.form['password']):
+            error = 'Invalid password'
+        else:
+            flash('You were logged in')
+            g.user = user
+            session['userid'] = user.user_id
+            return redirect(url_for('main'))
+    return render_template('login.html', error=error)
 
+
+@app.route('/main/', methods=['GET', 'POST'])
+def main():
+    if not g.user or 'userid' not in session:
+        return redirect(url_for('login'))
+    else:
+        return render_template('main.html')
 
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
-    """Registers the user."""
-    #if g.user:
-    #    return redirect(url_for('timeline'))
+    if g.user:
+        return redirect(url_for('main'))
     error = None
     if request.method == 'POST':
         if not request.form['username']:
@@ -107,11 +125,13 @@ def register():
             email = stringify(email)
             password = stringify(password)
 
-            g.db.cursor().execute("insert into user (username, email, password) values (%s, %s, %s)" % (username, email, password,))
-
+            g.db.cursor().execute("insert into users (username, email, password) values (%s, %s, %s)" % (username, email, password,))
             g.db.commit()
-            flash('You were successfully registered and can login now')
-            return redirect(url_for('login'))
+
+            g.user = get_user(g, username)
+            session['userid'] = g.user.user_id
+            flash('You were successfully registered')
+            return redirect(url_for('main'))
     return render_template('register.html', error=error)
 
 ###
@@ -123,7 +143,6 @@ def send_text_file(file_name):
     """Send your static text file."""
     file_dot_text = file_name + '.txt'
     return app.send_static_file(file_dot_text)
-
 
 @app.after_request
 def add_header(response):
@@ -137,8 +156,11 @@ def add_header(response):
 
 def get_user_id(username):
     """Convenience method to look up the id for a username."""
-    rv = g.db.cursor().execute('select username from users where username = ' + "'" + username + "'", one=True)
-    return rv[0] if rv else None
+    sql = 'select * from Users where Username = %s' % stringify(username)
+    cursor = g.db.cursor()
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    return result[0] if result else None
 
 
 @app.errorhandler(404)
@@ -150,4 +172,6 @@ def page_not_found(error):
 if __name__ == '__main__':
     app.run(debug=True)
     init_db()
+
+
 

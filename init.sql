@@ -1,7 +1,6 @@
 
 
 /* use if necessary */
-drop database Twitter; 
 
 CREATE SCHEMA IF NOT EXISTS `Twitter` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ; 
 
@@ -16,7 +15,7 @@ CREATE  TABLE IF NOT EXISTS `Twitter`.`Users` (
   `UserID` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `First` VARCHAR(45) NULL ,
   `Last` VARCHAR(45) NULL ,
-  `Password` VARCHAR(32) NULL ,
+  `Password` VARCHAR(160) NOT NULL ,
   `Web` VARCHAR(45) NULL ,
   `Username` VARCHAR(25) NOT NULL ,
   `Tweets` INT UNSIGNED NOT NULL DEFAULT 0 ,

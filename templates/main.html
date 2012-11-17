@@ -1,0 +1,69 @@
+{%  extends "home.html" %}
+
+{%  block main %}
+<div class="container-narrow">
+    <style type="text/css" >
+
+        .show-grid {
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        .show-grid [class*="span"] {
+            background-color: #eee;
+            text-align: center;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            min-height: 40px;
+            line-height: 40px;
+        }
+
+        .show-grid .show-grid {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+        .show-grid .show-grid [class*="span"] {
+            background-color: #ccc;
+        }
+    </style>
+    <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+            <li class="active"><a href="#">Main</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+        <h3 class="muted">CSPPDB Twitter Clone</h3>
+    </div>
+
+    <hr>
+
+    <div class="container">
+
+        <div class="row show-grid">
+            <div class="span3">
+                <div class="row show-grid">
+                    <div class="span3">212 TWEETS</div>
+                    <br />
+                </div>
+                <div class="row show-grid">
+                    <div class="span1">212 TWEETS</div>
+                    <div class="span1">123 FOLLOWING</div>
+                    <div class="span1">81 FOLLOWERS</div>
+                    <br />
+                </div>
+
+            </div>
+            <div class="span5">Level 2</div>
+        </div>
+
+
+    </div>
+
+
+    <hr>
+
+    <div class="footer">
+        <p>&copy; Company 2012</p>
+    </div>
+
+</div> <!-- /container -->
+{%  endblock %}
