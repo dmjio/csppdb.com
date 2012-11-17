@@ -3,7 +3,6 @@ from flask import Flask, request, session, url_for, redirect, \
      render_template, abort, g, flash, _app_ctx_stack
 from flaskext.mysql import MySQL
 from contextlib import closing
-from hashlib import md5
 from datetime import datetime
 from helpers import *
 from werkzeug import check_password_hash, generate_password_hash
@@ -27,34 +26,18 @@ else: app.config['SECRET_KEY'] = os.urandom(24)
 # Routing for your application.
 ###
 
-def init_db():
-    with closing(connect_db()) as db:
-        with app.open_resource('init.sql') as f:
-            db.cursor().execute(f.read())
-        db.commit()
-
 def connect_db(): return mysql.connect()
 
 @app.before_request
 def before_request():
     g.db = connect_db()
     g.user = None
-    if 'userid' in session:
-        g.user = get_user_by_id(g, session['userid'])
+    if 'userid' in session: g.user = get_user_by_id(g, session['userid'])
 
 @app.teardown_request
 def teardown_request(exception):
     if hasattr(g, 'db'):
         g.db.close()
-
-def format_datetime(timestamp):
-    """Format a timestamp for display."""
-    return datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d @ %H:%M')
-
-def gravatar_url(email, size=80):
-    """Return the gravatar image for the given email address."""
-    return 'http://www.gravatar.com/avatar/%s?d=identicon&s=%d' % \
-        (md5(email.strip().lower().encode('utf-8')).hexdigest(), size)
 
 @app.route('/')
 def home():
@@ -71,6 +54,12 @@ def logout():
     session.pop('userid', None)
     flash('You were logged out')
     return redirect(url_for('home'))
+
+@app.route('/profile/', methods=['GET', 'POST'])
+def profile():
+    user = get_user_by_id(g, g.user.user_id)
+    user.img = gravatar_url(user.email,140)
+    return render_template('profile.html', user=user)
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
@@ -96,7 +85,14 @@ def main():
     if 'userid' not in session or not g.user or session['userid'] is None:
         return redirect(url_for('login'))
     else:
-        return render_template('main.html')
+        sql = "select t.*, u.img, u.username, u.email from tweets t inner join users u on t.userid = u.userid;"
+        tweets = get_data(g, sql)
+
+        for i in tweets:
+            i['img'] = gravatar_url(i['email'], 30)
+
+        g.user.img = gravatar_url(g.user.email, 140)
+        return render_template('main.html', user=g.user, tweets=tweets)
 
 @app.route('/register/', methods=['GET', 'POST'])
 def register():

@@ -1,4 +1,5 @@
 from auth import *
+from hashlib import md5
 
 stringify = lambda x : '"' + x + '"'
 
@@ -23,4 +24,13 @@ def get_user_by_id(g, user_id):
         return User(user[0])
     else:
         return None
+
+def gravatar_url(email, size=80):
+    """Return the gravatar image for the given email address."""
+    return 'http://www.gravatar.com/avatar/%s?d=identicon&s=%d' %\
+           (md5(email.strip().lower().encode('utf-8')).hexdigest(), size)
+
+def format_datetime(timestamp):
+    """Format a timestamp for display."""
+    return datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d @ %H:%M')
 

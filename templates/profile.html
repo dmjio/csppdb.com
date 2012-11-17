@@ -26,14 +26,14 @@
             background-color: #ccc;
         }
     </style>
+
     <div class="masthead">
         <ul class="nav nav-pills pull-right">
-            <li class="active" ><a href="{{ url_for('main') }}">Main</a></li>
-            <li ><a href="{{ url_for('profile') }}">Profile</a></li>
+            <li ><a href="{{ url_for('main') }}">Main</a></li>
+            <li class="active"><a href="{{ url_for('profile') }}">Profile</a></li>
             <li ><a href="{{ url_for('profile') }}">Find People</a></li>
             <li ><a href="{{ url_for('profile') }}">Find Tags</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
-
         </ul>
         <h3 class="muted">CSPPDB Twitter Clone</h3>
     </div>
@@ -42,26 +42,33 @@
 
     <div class="container">
         <div class="row">
-            <div class="span2">
-                <img src="{{ user.img }}" class="img-rounded">
-            </div>
-
             <div class="span5">
+               <div class="span5">
+                   <div class="span2">
+                     <img src="{{ user.img }}" class="img-rounded">
+                   </div>
+                   <div class="span2">
+                       Profile information goes here.
+                   </div>
+               </div>
+
+
+                <div class="span3 bs-docs-sidebar">
+                    <ul class="nav nav-list bs-docs-sidenav">
+                        <li><a class="active" href="#global"><i class="icon-chevron-right"></i>Tweets</a></li>
+                        <li><a href="#gridSystem"><i class="icon-chevron-right"></i> Grid system</a></li>
+                        <li><a href="#fluidGridSystem"><i class="icon-chevron-right"></i> Fluid grid system</a></li>
+                        <li><a href="#layouts"><i class="icon-chevron-right"></i> Layouts</a></li>
+                        <li><a href="#responsive"><i class="icon-chevron-right"></i> Responsive design</a></li>
+                    </ul>
+                </div>
+
+            <div class="span2">
                 <table class="table table-striped table-hover">
 
-                    <tbody>
-                    {%  for tweet in tweets %}
-                    <tr>
-                        <td><img src="{{ tweet['img'] }}" class="img-rounded"></td>
-                        <td>{{ tweet['username'] }}</td>
-                        <td>{{ tweet['dislikes'] }}</td>
-                        <td>{{ tweet['likes'] }}</td>
-                        <td>{{ tweet['timestamp'] }}</td>
-                        <td>{{ tweet['content'] }}</td>
-                    </tr>
-                    {%  endfor %}
-                    </tbody>
+
                 </table>
+            </div>
             </div>
         </div>
 

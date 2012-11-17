@@ -1,5 +1,10 @@
 from flask.ext.login import UserMixin
 
+
+
+
+
+
 class User():
 
     def __init__(self, user):
