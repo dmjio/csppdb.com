@@ -9,15 +9,14 @@ from helpers import *
 from werkzeug import check_password_hash, generate_password_hash
 import config
 
-
 app = Flask(__name__)
 mysql = MySQL()
 
-app.config['MYSQL_DATABASE_HOST'] = config.MYSQL_DATABASE_HOST
-app.config['MYSQL_DATABASE_PORT'] = config.MYSQL_DATABASE_PORT
-app.config['MYSQL_DATABASE_USER'] = config.MYSQL_DATABASE_USER
-app.config['MYSQL_DATABASE_PASSWORD'] = config.MYSQL_DATABASE_PASSWORD
-app.config['MYSQL_DATABASE_DB'] = config.MYSQL_DATABASE_DB
+app.config['MYSQL_DATABASE_HOST'] = os.environ['MYSQL_DATABASE_HOST'] if 'MYSQL_DATABASE_HOST' in os.environ else config.MYSQL_DATABASE_HOST
+app.config['MYSQL_DATABASE_PORT'] = os.environ['MYSQL_DATABASE_PORT'] if 'MYSQL_DATABASE_PORT' in os.environ else config.MYSQL_DATABASE_PORT
+app.config['MYSQL_DATABASE_USER'] = os.environ['MYSQL_DATABASE_USER'] if 'MYSQL_DATABASE_USER' in os.environ else config.MYSQL_DATABASE_USER
+app.config['MYSQL_DATABASE_PASSWORD'] = os.environ['MYSQL_DATABASE_PASSWORD'] if 'MYSQL_DATABASE_PASSWORD' in os.environ else config.MYSQL_DATABASE_PASSWORD
+app.config['MYSQL_DATABASE_DB'] = os.environ['MYSQL_DATABASE_DB'] if 'MYSQL_DATABASE_DB' in os.environ else config.MYSQL_DATABASE_DB
 
 mysql.init_app(app)
 
@@ -27,7 +26,6 @@ else: app.config['SECRET_KEY'] = os.urandom(24)
 ###
 # Routing for your application.
 ###
-
 
 def init_db():
     with closing(connect_db()) as db:
@@ -39,16 +37,15 @@ def connect_db(): return mysql.connect()
 
 @app.before_request
 def before_request():
+    g.db = connect_db()
     g.user = None
     if 'userid' in session:
         g.user = get_user_by_id(g, session['userid'])
-
 
 @app.teardown_request
 def teardown_request(exception):
     if hasattr(g, 'db'):
         g.db.close()
-
 
 def format_datetime(timestamp):
     """Format a timestamp for display."""
@@ -71,7 +68,7 @@ def about(): return render_template('about.html')
 def logout():
     """Logs the user out."""
     g.user = None
-    session['userid'] = None
+    session.pop('userid', None)
     flash('You were logged out')
     return redirect(url_for('home'))
 
@@ -96,7 +93,7 @@ def login():
 
 @app.route('/main/', methods=['GET', 'POST'])
 def main():
-    if not g.user or 'userid' not in session:
+    if 'userid' not in session or not g.user or session['userid'] is None:
         return redirect(url_for('login'))
     else:
         return render_template('main.html')
@@ -114,7 +111,7 @@ def register():
             error = 'You have to enter a valid email address'
         elif not request.form['password']:
             error = 'You have to enter a password'
-        elif get_user_id(request.form['username']) is not None:
+        elif get_user(g, request.form['username']) is not None:
             error = 'The username is already taken'
         else:
             username = request.form['username']
@@ -125,11 +122,14 @@ def register():
             email = stringify(email)
             password = stringify(password)
 
-            g.db.cursor().execute("insert into users (username, email, password) values (%s, %s, %s)" % (username, email, password,))
+            sql = "insert into users (username, email, password) values (%s, %s, %s)" % (username, email, password,)
+            cursor = g.db.cursor()
+            cursor.execute(sql)
             g.db.commit()
 
-            g.user = get_user(g, username)
+            g.user = get_user(g, request.form['username'])
             session['userid'] = g.user.user_id
+
             flash('You were successfully registered')
             return redirect(url_for('main'))
     return render_template('register.html', error=error)
@@ -154,13 +154,6 @@ def add_header(response):
     response.headers['Cache-Control'] = 'public, max-age=600'
     return response
 
-def get_user_id(username):
-    """Convenience method to look up the id for a username."""
-    sql = 'select * from Users where Username = %s' % stringify(username)
-    cursor = g.db.cursor()
-    cursor.execute(sql)
-    result = cursor.fetchall()
-    return result[0] if result else None
 
 
 @app.errorhandler(404)
@@ -168,10 +161,10 @@ def page_not_found(error):
     """Custom 404 page."""
     return render_template('404.html'), 404
 
-
 if __name__ == '__main__':
     app.run(debug=True)
-    init_db()
+
+
 
 
 

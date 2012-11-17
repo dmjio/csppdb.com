@@ -1,17 +1,13 @@
 
 
-/* use if necessary */
 
-CREATE SCHEMA IF NOT EXISTS `Twitter` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ; 
-
-USE `Twitter` ;
 
 -- -----------------------------------------------------
 -- Table `Twitter`.`Users`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Twitter`.`Users` ;
+DROP TABLE IF EXISTS `Users` ;
 
-CREATE  TABLE IF NOT EXISTS `Twitter`.`Users` (
+CREATE  TABLE IF NOT EXISTS `Users` (
   `UserID` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `First` VARCHAR(45) NULL ,
   `Last` VARCHAR(45) NULL ,
@@ -29,9 +25,9 @@ CREATE  TABLE IF NOT EXISTS `Twitter`.`Users` (
 -- -----------------------------------------------------
 -- Table `Twitter`.`Tweets`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Twitter`.`Tweets` ;
+DROP TABLE IF EXISTS `Tweets` ;
 
-CREATE  TABLE IF NOT EXISTS `Twitter`.`Tweets` (
+CREATE  TABLE IF NOT EXISTS `Tweets` (
   `TweetID` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `Content` VARCHAR(150) NOT NULL ,
   `TimeStamp` DATETIME NOT NULL ,
@@ -44,9 +40,9 @@ CREATE  TABLE IF NOT EXISTS `Twitter`.`Tweets` (
 -- -----------------------------------------------------
 -- Table `Twitter`.`Hash`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Twitter`.`Hash` ;
+DROP TABLE IF EXISTS `Hash` ;
 
-CREATE  TABLE IF NOT EXISTS `Twitter`.`Hash` (
+CREATE  TABLE IF NOT EXISTS `Hash` (
   `HashTagID` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `Tag` VARCHAR(45) NOT NULL ,
   `TweetID` INT UNSIGNED NOT NULL ,
@@ -55,9 +51,9 @@ CREATE  TABLE IF NOT EXISTS `Twitter`.`Hash` (
 -- -----------------------------------------------------
 -- Table `Twitter`.`Mentions`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Twitter`.`Mentions` ;
+DROP TABLE IF EXISTS `Mentions` ;
 
-CREATE  TABLE IF NOT EXISTS `Twitter`.`Mentions` (
+CREATE  TABLE IF NOT EXISTS `Mentions` (
   `TweetID` INT UNSIGNED NOT NULL ,
   `UserID` INT UNSIGNED NOT NULL ,
   PRIMARY KEY (`UserID`, `TweetID`));
@@ -65,9 +61,9 @@ CREATE  TABLE IF NOT EXISTS `Twitter`.`Mentions` (
 -- -----------------------------------------------------
 -- Table `Twitter`.`URLS`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Twitter`.`URLS` ;
+DROP TABLE IF EXISTS `URLS` ;
 
-CREATE  TABLE IF NOT EXISTS `Twitter`.`URLS` (
+CREATE  TABLE IF NOT EXISTS `URLS` (
   `URLID` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '  ' ,
   `TweetID` INT UNSIGNED NOT NULL ,
   `URL` VARCHAR(150) NOT NULL ,
@@ -76,9 +72,9 @@ CREATE  TABLE IF NOT EXISTS `Twitter`.`URLS` (
 -- -----------------------------------------------------
 -- Table `Twitter`.`Followers`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Twitter`.`Followers` ;
+DROP TABLE IF EXISTS `Followers` ;
 
-CREATE  TABLE IF NOT EXISTS `Twitter`.`Followers` (
+CREATE  TABLE IF NOT EXISTS `Followers` (
   `UserID` INT UNSIGNED NOT NULL ,
   `FollowerID` INT UNSIGNED NOT NULL ,
   PRIMARY KEY (`UserID`, `FollowerID`));
@@ -86,9 +82,9 @@ CREATE  TABLE IF NOT EXISTS `Twitter`.`Followers` (
 -- -----------------------------------------------------
 -- Table `Twitter`.`ReTweets`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Twitter`.`ReTweets` ;
+DROP TABLE IF EXISTS `ReTweets` ;
 
-CREATE  TABLE IF NOT EXISTS `Twitter`.`ReTweets` (
+CREATE  TABLE IF NOT EXISTS `ReTweets` (
   `UserID` INT UNSIGNED NOT NULL ,
   `TweetID` INT UNSIGNED NOT NULL ,
   `TimeStamp` DATETIME NULL,
@@ -97,9 +93,9 @@ CREATE  TABLE IF NOT EXISTS `Twitter`.`ReTweets` (
 -- -----------------------------------------------------
 -- Table `Twitter`.`Favorites`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Twitter`.`Favorites` ;
+DROP TABLE IF EXISTS `Favorites` ;
 
-CREATE  TABLE IF NOT EXISTS `Twitter`.`Favorites` (
+CREATE  TABLE IF NOT EXISTS `Favorites` (
   `UserID` INT UNSIGNED NOT NULL ,
   `TweetID` INT UNSIGNED NOT NULL ,
   PRIMARY KEY (`UserID`, `TweetID`));
@@ -107,9 +103,9 @@ CREATE  TABLE IF NOT EXISTS `Twitter`.`Favorites` (
 -- -----------------------------------------------------
 -- Table `Twitter`.`Likes`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Twitter`.`Likes` ;
+DROP TABLE IF EXISTS `Likes` ;
 
-CREATE  TABLE IF NOT EXISTS `Twitter`.`Likes` (
+CREATE  TABLE IF NOT EXISTS `Likes` (
   `TweetID` INT UNSIGNED NOT NULL ,
   `UserID` INT UNSIGNED NOT NULL ,
   PRIMARY KEY (`TweetID`, `UserID`));
