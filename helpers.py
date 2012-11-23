@@ -1,27 +1,35 @@
+from datetime import datetime
+from app import mysql
 from auth import *
 from hashlib import md5
+from flask import g
+
+def connect_db(): return mysql.connect()
 
 stringify = lambda x : '"' + x + '"'
 
-def get_data(g, sql):
+def exec_sql(sql):
+    cursor = g.db.cursor()
+    cursor.execute(sql)
+    g.db.commit()
+
+def get_data(sql):
     cursor = g.db.cursor()
     cursor.execute(sql)
     data = [dict((cursor.description[idx][0], value) for idx, value in enumerate(row)) for row in cursor.fetchall()]
     return data
 
-def get_user(g, username):
+def add_user(username, email, password):
+    sql = "call ADD_USER(%s, %s, %s)" % (stringify(username), stringify(password),stringify(email))
+    exec_sql(sql)
+    return get_user(username)
+
+
+def get_user(username):
     sql = 'select * from users where username = %s;' % stringify(username)
-    user = get_data(g, sql)
+    user = get_data(sql)
     if len(user) and user[0] is not None:
             return User(user[0])
-    else:
-        return None
-
-def get_user_by_id(g, user_id):
-    sql = 'select * from users where userid = %s;' % user_id
-    user = get_data(g, sql)
-    if len(user) and user[0] is not None:
-        return User(user[0])
     else:
         return None
 

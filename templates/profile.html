@@ -29,11 +29,12 @@
 
     <div class="masthead">
         <ul class="nav nav-pills pull-right">
-            <li ><a href="{{ url_for('main') }}">Main</a></li>
+            <li  ><a href="{{ url_for('main') }}">Main</a></li>
             <li class="active"><a href="{{ url_for('profile') }}">Profile</a></li>
             <li ><a href="{{ url_for('profile') }}">Find People</a></li>
             <li ><a href="{{ url_for('profile') }}">Find Tags</a></li>
-            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout {{ (user.username) }} </a></li>
+
         </ul>
         <h3 class="muted">CSPPDB Twitter Clone</h3>
     </div>

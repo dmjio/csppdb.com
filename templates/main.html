@@ -32,7 +32,7 @@
             <li ><a href="{{ url_for('profile') }}">Profile</a></li>
             <li ><a href="{{ url_for('profile') }}">Find People</a></li>
             <li ><a href="{{ url_for('profile') }}">Find Tags</a></li>
-            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout {{ (user.username) }} </a></li>
 
         </ul>
         <h3 class="muted">CSPPDB Twitter Clone</h3>

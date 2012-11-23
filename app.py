@@ -1,9 +1,8 @@
+from flask.ext.login import *
 import os
 from flask import Flask, request, session, url_for, redirect, \
-     render_template, abort, g, flash, _app_ctx_stack
+     render_template, g, flash
 from flaskext.mysql import MySQL
-from contextlib import closing
-from datetime import datetime
 from helpers import *
 from werkzeug import check_password_hash, generate_password_hash
 import config
@@ -26,78 +25,96 @@ else: app.config['SECRET_KEY'] = os.urandom(24)
 # Routing for your application.
 ###
 
-def connect_db(): return mysql.connect()
+login_manager = LoginManager()
+login_manager.refresh_view = "reauth"
+login_manager.login_view = "login"
 
-@app.before_request
-def before_request():
+@login_manager.user_loader
+def load_user(username):
     g.db = connect_db()
-    g.user = None
-    if 'userid' in session: g.user = get_user_by_id(g, session['userid'])
+    return get_user(username)
 
-@app.teardown_request
-def teardown_request(exception):
-    if hasattr(g, 'db'):
-        g.db.close()
+login_manager.init_app(app)
 
 @app.route('/')
-def home():
-    """Render website's home page."""
-    return render_template('home.html')
+def home(): return render_template('home.html')
 
 @app.route('/about/') 
 def about(): return render_template('about.html')
 
+def connect_db(): return mysql.connect()
+
 @app.route('/logout')
+@login_required
 def logout():
     """Logs the user out."""
-    g.user = None
-    session.pop('userid', None)
+    logout_user()
     flash('You were logged out')
     return redirect(url_for('home'))
 
+@app.before_request
+def before_request():
+    g.user = current_user
+    g.db = connect_db()
+
+@app.teardown_request
+def tear_down(exception):
+    g.db.close()
+
+@app.route("/reauth", methods=["GET", "POST"])
+@login_required
+def reauth():
+    if request.method == "POST":
+        confirm_login()
+        flash(u"Reauthenticated.")
+        return redirect(request.args.get("next") or url_for("main"))
+    return render_template("login.html")
+
 @app.route('/profile/', methods=['GET', 'POST'])
+@login_required
 def profile():
-    user = get_user_by_id(g, g.user.user_id)
+    user = get_user(g.user.username)
     user.img = gravatar_url(user.email,140)
     return render_template('profile.html', user=user)
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
     """Logs the user in."""
-    if g.user: return redirect(url_for('main'))
+    if request.method == 'GET':
+        if current_user is user_logged_in: logout_user()
+
     error = None
     if request.method == 'POST':
-        user = get_user(g, request.form['username'])
+        user = get_user(request.form['username'])
         if user is None:
             error = 'Invalid username'
         elif not check_password_hash(user.password, request.form['password']):
             error = 'Invalid password'
         else:
             flash('You were logged in')
-            g.user = user
-            session['userid'] = user.user_id
+            login_user(user)
             return redirect(url_for('main'))
+
     return render_template('login.html', error=error)
 
-
-@app.route('/main/', methods=['GET', 'POST'])
+@app.route('/main/')
+@fresh_login_required
 def main():
-    if 'userid' not in session or not g.user or session['userid'] is None:
-        return redirect(url_for('login'))
-    else:
-        sql = "select t.*, u.img, u.username, u.email from tweets t inner join users u on t.userid = u.userid;"
-        tweets = get_data(g, sql)
+    sql = "select t.*, u.img, u.username, u.email from tweets t inner join users u on t.username = u.username;"
+    tweets = get_data(sql)
 
-        for i in tweets:
-            i['img'] = gravatar_url(i['email'], 30)
+    for i in tweets: i['img'] = gravatar_url(i['email'], 30)
 
-        g.user.img = gravatar_url(g.user.email, 140)
-        return render_template('main.html', user=g.user, tweets=tweets)
+    user = get_user(g.user.username)
+
+    user.img = gravatar_url(user.email, 140)
+    return render_template('main.html', user=user, tweets=tweets)
+
 
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
-    if g.user:
-        return redirect(url_for('main'))
+    if request.method == 'GET':
+        if current_user is user_logged_in: logout_user()
     error = None
     if request.method == 'POST':
         if not request.form['username']:
@@ -107,25 +124,15 @@ def register():
             error = 'You have to enter a valid email address'
         elif not request.form['password']:
             error = 'You have to enter a password'
-        elif get_user(g, request.form['username']) is not None:
+        elif get_user(request.form['username']) is not None:
             error = 'The username is already taken'
         else:
-            username = request.form['username']
-            email = request.form['email']
-            password = generate_password_hash(request.form['password'])
 
-            username = stringify(username)
-            email = stringify(email)
-            password = stringify(password)
+            user = add_user(request.form['username'],
+                            request.form['email'],
+                            generate_password_hash(request.form['password']))
 
-            sql = "insert into users (username, email, password) values (%s, %s, %s)" % (username, email, password,)
-            cursor = g.db.cursor()
-            cursor.execute(sql)
-            g.db.commit()
-
-            g.user = get_user(g, request.form['username'])
-            session['userid'] = g.user.user_id
-
+            login_user(user)
             flash('You were successfully registered')
             return redirect(url_for('main'))
     return render_template('register.html', error=error)

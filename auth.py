@@ -1,14 +1,11 @@
-from flask.ext.login import UserMixin
+from flask.ext.login import UserMixin, AnonymousUser
 
+class Anonymous(AnonymousUser):
+    name = u"Anonymous"
 
-
-
-
-
-class User():
+class User(UserMixin):
 
     def __init__(self, user):
-        self.user_id = user['UserID']
         self.username = user['Username']
         self.email = user['Email']
         self.first = user['First']
@@ -19,22 +16,15 @@ class User():
         self.updated = user['Updated']
         self.blurb = user['Blurb']
         self.img = user['IMG']
-        self.tweets = user['Tweets']
-
-    def is_authenticated(self):
-            return True
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
+        self.tweets = user['Age']
+        self.active = True
 
     def get_id(self):
-        return unicode(self.user_id)
+        return unicode(self.username)
 
     def __repr__(self):
         return '<User %r>' % self.username
+
 
 
 
