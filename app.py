@@ -29,7 +29,6 @@ def connect_db(): return mysql.connect()
 ###
 
 login_manager = LoginManager()
-login_manager.refresh_view = "reauth"
 login_manager.login_view = "login"
 
 @login_manager.user_loader
@@ -63,15 +62,6 @@ def before_request():
 @app.teardown_request
 def tear_down(exception):
     g.db.close()
-
-@app.route("/reauth", methods=["GET", "POST"])
-@login_required
-def reauth():
-    if request.method == "POST":
-        confirm_login()
-        flash(u"Reauthenticated.")
-        return redirect(request.args.get("next") or url_for("main"))
-    return render_template("login.html")
 
 @app.route('/profile/', methods=['GET', 'POST'])
 @login_required
