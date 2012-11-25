@@ -1,10 +1,7 @@
 from datetime import datetime
-from app import mysql
 from auth import *
 from hashlib import md5
 from flask import g
-
-def connect_db(): return mysql.connect()
 
 stringify = lambda x : '"' + x + '"'
 
