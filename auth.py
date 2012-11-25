@@ -16,7 +16,7 @@ class User(UserMixin):
         self.updated = user['Updated']
         self.blurb = user['Blurb']
         self.img = user['IMG']
-        self.tweets = user['Age']
+        self.popular = user['Popular']
         self.active = True
 
     def get_id(self):
