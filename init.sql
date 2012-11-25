@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS `Users` ;
 
 CREATE  TABLE IF NOT EXISTS `Users` (
   `Username` VARCHAR(25) NOT NULL UNIQUE,
-  `Password` VARCHAR(160) NOT NULL ,
+  `Password` VARCHAR(160) NOT NULL,
   `First` VARCHAR(45) NULL ,
   `Last` VARCHAR(45) NULL ,
   `Web` VARCHAR(45) NULL ,
@@ -27,18 +27,15 @@ DROP TABLE IF EXISTS `Tweets` ;
 CREATE  TABLE IF NOT EXISTS `Tweets` (
   `TweetID` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `Content` VARCHAR(150) NOT NULL ,
-  `Created` TIMESTAMP NULL DEFAULT NOW() ON UPDATE NOW(),
-  `Rating` INT NULL DEFAULT 0 ,
-  `Likes` INT UNSIGNED NULL DEFAULT 0 ,
-  `Dislikes` INT UNSIGNED NULL DEFAULT 0 ,
   `Username` VARCHAR(25) NOT NULL ,
+  `Created` DATETIME NOT NULL,
   PRIMARY KEY (`TweetID`, `Username`));
 
 -- -----------------------------------------------------
 -- Table `Twitter`.`Hash`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `Hash` ;
-
+  
 CREATE  TABLE IF NOT EXISTS `Hash` (
   `HashTagID` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `Tag` VARCHAR(45) NOT NULL ,
@@ -52,10 +49,11 @@ CREATE  TABLE IF NOT EXISTS `Hash` (
 DROP TABLE IF EXISTS `Mentions` ;
 
 CREATE  TABLE IF NOT EXISTS `Mentions` (
+  `MentionID` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `TweetID` INT UNSIGNED NOT NULL ,
-  `Username` VARCHAR(25) NOT NULL ,
+  `Username` VARCHAR(25) NOT NULL ,   
   `Created` DATETIME NOT NULL,
-  PRIMARY KEY (`UserName`, `TweetID`));
+  PRIMARY KEY (`MentionID`,`UserName`, `TweetID`));
 
 -- -----------------------------------------------------
 -- Table `Twitter`.`Urls`
@@ -63,7 +61,7 @@ CREATE  TABLE IF NOT EXISTS `Mentions` (
 DROP TABLE IF EXISTS `Urls` ;
 
 CREATE  TABLE IF NOT EXISTS `Urls` (
-  `UrlID` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '  ' ,
+  `UrlID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `TweetID` INT UNSIGNED NOT NULL ,
   `URL` VARCHAR(150) NOT NULL ,
   `Created` DATETIME NOT NULL,

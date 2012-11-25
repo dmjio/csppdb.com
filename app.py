@@ -3,7 +3,7 @@ import os
 from flask import Flask, request, session, url_for, redirect, \
      render_template, g, flash
 from flaskext.mysql import MySQL
-from helpers import *
+from data import *
 from werkzeug import check_password_hash, generate_password_hash
 import config
 
@@ -98,17 +98,65 @@ def login():
     return render_template('login.html', error=error)
 
 @app.route('/main/')
-@fresh_login_required
+@login_required
 def main():
-    sql = "select t.*, u.img, u.username, u.email from tweets t inner join users u on t.username = u.username;"
-    tweets = get_data(sql)
+    tweets, user = get_main()
+    follower_count, followee_count = get_follower_info(g.user.username)
+    return render_template('main.html', user=user, tweets=tweets, followercount = follower_count, followeecount = followee_count)
 
-    for i in tweets: i['img'] = gravatar_url(i['email'], 30)
+@app.route('/people/', methods=['GET', 'POST'])
+@fresh_login_required
+def find_people():
+    users = get_people_to_follow(g.user.username)
+    for u in users: u['IMG'] = gravatar_url(u['Email'], 40)
+    return render_template('find_people.html', users=users, user=g.user)
 
+@app.route('/tags/', methods=['GET', 'POST'])
+@fresh_login_required
+def find_tags():
+    if request.method == "GET":
+        tags = get_top_ten_recent_tags()
+    else:
+        tags = get_tags()
+        for u in tags: u['IMG'] = gravatar_url(u['Email'], 40)
+
+    return render_template('tags.html', tags=tags, user=g.user)
+
+@app.route('/followers/', methods=['GET', 'POST'])
+@login_required
+def followers():
+    followers = get_followers(g.user.username)
     user = get_user(g.user.username)
-
     user.img = gravatar_url(user.email, 140)
-    return render_template('main.html', user=user, tweets=tweets)
+    follower_count, followee_count = get_follower_info(g.user.username)
+    return render_template('followers.html', followers=followers, user=user, followercount = follower_count, followeecount = followee_count)
+
+@app.route('/followees/', methods=['GET', 'POST'])
+@login_required
+def followees():
+    followees = get_followees(g.user.username)
+    user = get_user(g.user.username)
+    user.img = gravatar_url(user.email, 140)
+    follower_count, followee_count = get_follower_info(g.user.username)
+    return render_template('followees.html', followees=followees, user=user, followercount = follower_count, followeecount = followee_count)
+
+@app.route('/follow/', methods=['GET', 'POST'])
+@login_required
+def follow():
+    follow_user(g.user.username, request.form['Username'])
+    return redirect(url_for('main'))
+
+@app.route('/unfollow/', methods=['GET', 'POST'])
+@login_required
+def unfollow():
+    unfollow_user(request.form['Username'], g.user.username)
+    return redirect(url_for('followees'))
+
+@app.route('/tweet/', methods=['GET', 'POST'])
+@login_required
+def tweet():
+    if request.method == "POST": create_tweet(request.form['tweet'])
+    return redirect(url_for('main'))
 
 
 @app.route('/register/', methods=['GET', 'POST'])
@@ -156,7 +204,6 @@ def add_header(response):
     response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
     response.headers['Cache-Control'] = 'public, max-age=600'
     return response
-
 
 
 @app.errorhandler(404)

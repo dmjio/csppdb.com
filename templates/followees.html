@@ -14,6 +14,7 @@
         </ul>
         <h3 class="muted">CSPPDB Twitter Clone</h3>
     </div>
+
     <hr>
 
     <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -31,9 +32,10 @@
         </div>
         </form>
     </div>
+
     <div class="container">
         <div class="row">
-            <div class="span2">
+            <div class="span3">
                 <img src="{{ user.img }}" class="img-rounded">
                 <table>
                     <thead>
@@ -45,35 +47,39 @@
                 </table>
             </div>
             <div class="span5">
-                <ul class="nav nav-pills">
-                    <li class="active" ><a href="{{ url_for('main') }}">Feed</a></li>
-                    <li><a href="{{ url_for('followers') }}">People that follow you</a></li>
-                    <li ><a href="{{ url_for('followees') }}">People that you follow</a></li>
+                <ul class="nav nav-pills pull-right">
+                    <li ><a href="{{ url_for('main') }}">Feed</a></li>
+                    <li ><a href="{{ url_for('followers') }}">People that follow you</a></li>
+                    <li class="active"><a href="{{ url_for('followees') }}">People that you follow</a></li>
                 </ul>
-                <table class="table table-striped table-hover">
+                {% if followees|count %}
+                    <form action="{{ url_for('unfollow') }}" method="POST">
+                    <table class="table table-striped table-hover">
                     <thead>
-                        <tr>
-                            <th></th>
-                            <th>User</th>
-                            <th>Tweet</th>
-                            <th>Created</th>
-                        </tr>
+                    <th></th>
+                    <th>Username</th>
+                    <th>Blurb</th>
+                    <th>Created</th>
                     </thead>
                     <tbody>
-                    {%  for tweet in tweets %}
+                    {%  for user in followees %}
                         <tr>
-                            <td><img src="{{ tweet['img'] }}" class="img-rounded"></td>
-                            <td>{{ tweet['Username'] }}</td>
-                            <td>{{ tweet['Content'] }}</td>
-                            <td>{{ tweet['Created'] }}</td>
+                            <td><img src="{{ user['IMG'] }}" class="img-rounded"></td>
+                            <td>{{ user['Username'] }}</td>
+                            <td>{{ user['Blurb'] }}</td>
+                            <td>{{ user['Created'] }}</td>
+                            <td><button type="submit" name="Username" value="{{ user['Username'] }}" class="btn btn-warning">UnFollow</button></td>
                         </tr>
                     {%  endfor %}
                     </tbody>
                 </table>
+                </form>
+            {% endif %}
             </div>
         </div>
         <div class="row">
                 <div class="span3">
+                    <hr>
                     <a href="#myModal" role="button" class="btn" data-toggle="modal">Tweet</a>
                 </div>
         </div>
@@ -83,7 +89,7 @@
     <hr>
 
     <div class="footer">
-        <p>&copy; CSPPDB 2012</p>
+        <p>&copy; Company 2012</p>
     </div>
 
 </div> <!-- /container -->
