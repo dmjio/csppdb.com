@@ -108,3 +108,101 @@ CREATE TABLE IF NOT EXISTS `Likes` (
   `Username` VARCHAR(25) NOT NULL ,
   PRIMARY KEY (`TweetID`, `Username`));
 
+
+DROP PROCEDURE IF EXISTS `ADD_USER` ;
+DROP PROCEDURE IF EXISTS `ADD_URL` ;
+DROP PROCEDURE IF EXISTS `UPDATE_USER` ;
+DROP PROCEDURE IF EXISTS `TWEETCOUNT` ;
+DROP PROCEDURE IF EXISTS `USERCOUNT` ;
+DROP PROCEDURE IF EXISTS `ADD_TWEET` ;
+DROP PROCEDURE IF EXISTS `DELETE_TWEET` ;
+DROP PROCEDURE IF EXISTS `FOLLOW_USER` ;
+DROP PROCEDURE IF EXISTS `UNFOLLOW_USER` ;
+DROP PROCEDURE IF EXISTS `ADD_HASH` ;
+DROP PROCEDURE IF EXISTS `RETWEET` ;
+DROP PROCEDURE IF EXISTS `ADD_FAVORITE` ;
+DROP PROCEDURE IF EXISTS `ADD_MENTION` ;
+DROP PROCEDURE IF EXISTS `LIKE_TWEET` ;
+
+
+-- Stored routine(s) 
+CREATE PROCEDURE ADD_USER(
+  uUsername VARCHAR(25),
+  uPassword VARCHAR(160),
+  uEmail VARCHAR(100))
+  INSERT INTO Users (Username, Password, Email, Created, Updated) VALUES
+  (uUsername, uPassword, uEmail, NOW(), NOW());
+
+CREATE PROCEDURE UPDATE_USER(
+  uUsername VARCHAR(25),
+  uFirst VARCHAR(45),
+  uLast VARCHAR(45),
+  uWeb VARCHAR(45),
+  uPopular INT,
+  uEmail VARCHAR(100),
+  uBlurb VARCHAR(150),
+  uIMG VARCHAR(255))
+    UPDATE Users 
+    SET
+    First = uFirst, 
+    Last = uLast, 
+    Web = uWeb, 
+    Popular = uPopular, 
+    Updated = NOW(), 
+    Email = uEmail, 
+    Blurb = uBlurb, 
+    IMG = uIMG
+    WHERE UserName = uUsername;
+
+-- Stored routine(s) 2
+CREATE PROCEDURE TWEETCOUNT() SELECT COUNT(*) as 'Total Tweet Count' FROM Tweets;
+CREATE PROCEDURE USERCOUNT() SELECT COUNT(*) as 'Total User Count' FROM Users;
+
+-- Stored routine(s) 3
+CREATE PROCEDURE ADD_TWEET(tUserName VARCHAR(25), tContent VARCHAR(150))
+INSERT INTO Tweets (UserName, Content, Created) 
+VALUES (tUserName, tContent, NOW());
+
+CREATE PROCEDURE DELETE_TWEET(uTweetID INT)
+DELETE FROM Tweets WHERE TweetID = uTweetID;
+
+-- Other procedures I will need... I am only testing the scenarios for the ones above ^
+-- Follow relationships
+CREATE PROCEDURE FOLLOW_USER(Follower VARCHAR(25), UserToFollow VARCHAR(25))
+INSERT INTO Followers (User, Follower) 
+VALUES (Follower, UserToFollow);
+
+CREATE PROCEDURE UNFOLLOW_USER(tUserToFollow VARCHAR(25), tFollower VARCHAR(25))
+DELETE FROM Followers WHERE User = tUserToFollow AND Follower = tFollower;
+
+-- Add a hash
+CREATE PROCEDURE ADD_HASH(tTag VARCHAR(45), tTweetID INT)
+INSERT INTO HASH (Tag, TweetID, Created)
+VALUES (tTag, tTweetID, NOW());
+
+-- Add Urls
+CREATE PROCEDURE ADD_URL(tUrl VARCHAR(150), tTweetID INT)
+INSERT INTO URLS (TweetID, URL, Created)
+VALUES (tTweetID, tUrl, NOW());
+
+-- Retweets
+CREATE PROCEDURE RETWEET (tUsername VARCHAR(25), tTweetID INT)
+INSERT INTO RETWEET (Username, TweetID, Created)
+VALUES (tUsername, tTweetID, NOW());
+
+-- Favorites
+CREATE PROCEDURE ADD_FAVORITE (tUsername VARCHAR(25), tTweetID INT)
+INSERT INTO FAVORITES (TweetID, Username)
+VALUES (tUsername, tTweetID);
+
+-- Mention
+CREATE PROCEDURE ADD_MENTION(tTweetID INT, tUsername VARCHAR(25))
+INSERT INTO MENTIONS (TweetID, Username, Created)
+VALUES (tTweetID, tUsername, NOW());
+
+-- Favorites
+CREATE PROCEDURE LIKE_TWEET (tUsername VARCHAR(25), tTweetID INT)
+INSERT INTO Likes (TweetID, Username)
+VALUES (tUsername, tTweetID);
+
+

@@ -108,14 +108,14 @@ def main():
     return render_template('main.html', user=user, tweets=tweets, followercount = follower_count, followeecount = followee_count)
 
 @app.route('/people/', methods=['GET', 'POST'])
-@fresh_login_required
+@login_required
 def find_people():
     users = get_people_to_follow(g.user.username)
     for u in users: u['IMG'] = gravatar_url(u['Email'], 40)
     return render_template('find_people.html', users=users, user=g.user)
 
 @app.route('/tags/', methods=['GET', 'POST'])
-@fresh_login_required
+@login_required
 def find_tags():
     if request.method == "GET":
         tags = get_top_ten_recent_tags()
