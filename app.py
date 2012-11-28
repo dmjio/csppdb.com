@@ -35,7 +35,7 @@ def load_user(username):
     print "loding user.."
     g.db = connect_db()
     u = get_user(username)
-    print("user: " % u)
+    print("user: " + u.username)
     return u
 
 login_manager.init_app(app)

@@ -25,7 +25,7 @@
       <file leaf-file-name="tags.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/tags.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="28" column="18" selection-start="997" selection-end="997" vertical-scroll-proportion="0.0">
+            <state line="28" column="18" selection-start="997" selection-end="997" vertical-scroll-proportion="-0.64">
               <folding />
             </state>
           </provider>
@@ -52,7 +52,7 @@
       <file leaf-file-name="app.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="37" column="23" selection-start="1476" selection-end="1476" vertical-scroll-proportion="0.26858515">
+            <state line="36" column="26" selection-start="1452" selection-end="1452" vertical-scroll-proportion="0.23021583">
               <folding />
             </state>
           </provider>
@@ -61,25 +61,7 @@
       <file leaf-file-name="followees.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/followees.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="46" column="24" selection-start="1857" selection-end="1857" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="followers.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/followers.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="42" column="18" selection-start="1685" selection-end="1685" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="data.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="103" column="17" selection-start="3899" selection-end="3899" vertical-scroll-proportion="0.0">
+            <state line="46" column="24" selection-start="1857" selection-end="1857" vertical-scroll-proportion="-0.64">
               <folding />
             </state>
           </provider>
@@ -443,21 +425,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/tags.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="18" selection-start="997" selection-end="997" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/followees.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="24" selection-start="1857" selection-end="1857" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/followers.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="18" selection-start="1685" selection-end="1685" vertical-scroll-proportion="0.0">
+        <state line="28" column="18" selection-start="997" selection-end="997" vertical-scroll-proportion="-0.64">
           <folding />
         </state>
       </provider>
@@ -502,14 +470,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="103" column="17" selection-start="3899" selection-end="3899" vertical-scroll-proportion="0.0">
+        <state line="88" column="4" selection-start="3278" selection-end="3278" vertical-scroll-proportion="0.21822542">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/followers.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="42" column="18" selection-start="1685" selection-end="1685" vertical-scroll-proportion="0.040816326">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/followees.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="46" column="24" selection-start="1857" selection-end="1857" vertical-scroll-proportion="-0.64">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="23" selection-start="1476" selection-end="1476" vertical-scroll-proportion="0.26858515">
+        <state line="36" column="26" selection-start="1452" selection-end="1452" vertical-scroll-proportion="0.23021583">
           <folding />
         </state>
       </provider>
