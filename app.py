@@ -23,7 +23,6 @@ else: app.config['SECRET_KEY'] = os.urandom(24)
 
 def connect_db(): return mysql.connect()
 
-
 ###
 # Routing for your application.
 ###
@@ -41,18 +40,7 @@ login_manager.init_app(app)
 @app.route('/')
 def home(): return render_template('home.html')
 
-@app.route('/about/') 
-def about(): return render_template('about.html')
-
 def connect_db(): return mysql.connect()
-
-@app.route('/logout')
-@login_required
-def logout():
-    """Logs the user out."""
-    logout_user()
-    flash('You were logged out')
-    return redirect(url_for('home'))
 
 @app.before_request
 def before_request():
@@ -63,18 +51,9 @@ def before_request():
 def tear_down(exception):
     g.db.close()
 
-@app.route('/profile/', methods=['GET', 'POST'])
-@login_required
-def profile():
-    user = get_user(g.user.username)
-    user.img = gravatar_url(user.email,140)
-    return render_template('profile.html', user=user)
-
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
     """Logs the user in."""
-    if request.method == 'GET':
-        if current_user is user_logged_in: logout_user()
 
     error = None
     if request.method == 'POST':
@@ -89,6 +68,29 @@ def login():
             return redirect(url_for('main'))
 
     return render_template('login.html', error=error)
+
+
+@app.route('/about/')
+def about(): return render_template('about.html')
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    """Logs the user out."""
+    logout_user()
+    flash('You were logged out')
+    return redirect(url_for('home'))
+
+
+
+@app.route('/profile/', methods=['GET', 'POST'])
+@login_required
+def profile():
+    user = get_user(g.user.username)
+    user.img = gravatar_url(user.email,140)
+    return render_template('profile.html', user=user)
+
 
 @app.route('/main/')
 @login_required
