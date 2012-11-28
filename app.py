@@ -32,8 +32,11 @@ login_manager.login_view = "login"
 
 @login_manager.user_loader
 def load_user(username):
+    print "loding user.."
     g.db = connect_db()
-    return get_user(username)
+    u = get_user(username)
+    print("user: " % u)
+    return u
 
 login_manager.init_app(app)
 
@@ -44,6 +47,7 @@ def connect_db(): return mysql.connect()
 
 @app.before_request
 def before_request():
+    print("before request")
     g.user = current_user
     g.db = connect_db()
 
