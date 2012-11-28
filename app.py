@@ -61,13 +61,18 @@ def login():
 
     error = None
     if request.method == 'POST':
+        print("posted")
         user = get_user(request.form['username'])
+        print("getting user: " + user.username)
         if user is None:
             error = 'Invalid username'
+            print error
         elif not check_password_hash(user.password, request.form['password']):
             error = 'Invalid password'
+            print error
         else:
             flash('You were logged in')
+            print "logged in"
             login_user(user)
             return redirect(url_for('main'))
 
@@ -99,6 +104,7 @@ def profile():
 @app.route('/main/')
 @login_required
 def main():
+    print("in main")
     tweets, user = get_main()
     follower_count, followee_count = get_follower_info(g.user.username)
     return render_template('main.html', user=user, tweets=tweets, followercount = follower_count, followeecount = followee_count)
