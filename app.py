@@ -47,8 +47,6 @@ def teardown_request(exception):
 
 @app.before_request
 def before_request():
-    print "globals", globals.session['username']
-    session = globals.session
     print session.keys(), session.values()
     print("before request")
     print ('username' in session, "in session?")
