@@ -74,12 +74,10 @@ def login():
             print error
         else:
             flash('You were logged in')
-            if login_user(user, remember=True):
-                print "logged in"
-                session['username'] = request.form['username']
-                print error, "error"
-                print ('user_id' in session, "in session login?")
-                return redirect(url_for('main'))
+            print "logged in"
+            session['username'] = request.form['username']
+            print error, "error"
+            return redirect(url_for('main'))
 
     return render_template('login.html', error=error)
 
