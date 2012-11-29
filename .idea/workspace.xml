@@ -25,7 +25,7 @@
       <file leaf-file-name="app.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="46" column="19" selection-start="1644" selection-end="1644" vertical-scroll-proportion="0.29268292">
+            <state line="99" column="0" selection-start="3120" selection-end="3120" vertical-scroll-proportion="0.56585366">
               <folding>
                 <element signature="e#0#29#0" expanded="true" />
               </folding>
@@ -384,12 +384,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/app.py</url>
-          <line>101</line>
+          <line>103</line>
           <option name="timeStamp" value="112" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/app.py</url>
-          <line>87</line>
+          <line>88</line>
           <option name="timeStamp" value="113" />
         </line-breakpoint>
       </breakpoints>
@@ -428,13 +428,6 @@
     <entry file="file://$PROJECT_DIR$/venv/lib/python2.7/site-packages/werkzeug/local.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="113" column="8" selection-start="3277" selection-end="3277" vertical-scroll-proportion="0.33255813">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/venv/lib/python2.7/site-packages/flask/globals.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="24" selection-start="705" selection-end="705" vertical-scroll-proportion="0.5534884">
           <folding />
         </state>
       </provider>
@@ -504,9 +497,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/venv/lib/python2.7/site-packages/flask/globals.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="31" column="23" selection-start="738" selection-end="738" vertical-scroll-proportion="0.74832964">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="19" selection-start="1644" selection-end="1644" vertical-scroll-proportion="0.29268292">
+        <state line="99" column="0" selection-start="3120" selection-end="3120" vertical-scroll-proportion="0.56585366">
           <folding>
             <element signature="e#0#29#0" expanded="true" />
           </folding>

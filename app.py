@@ -72,6 +72,7 @@ def login():
             flash('You were logged in')
             print "logged in"
             session['username'] = request.form['username']
+            g.user = request.form['username']
             print error, "error"
             return redirect(url_for('main'))
 
@@ -99,6 +100,7 @@ def profile():
 
 @app.route('/main/')
 def main():
+    print g.user
     print session.keys(), session.values()
     print("in main", 'username' in session)
     if 'username' in session:
