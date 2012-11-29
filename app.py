@@ -101,9 +101,11 @@ def profile():
     return render_template('profile.html', user=user)
 
 @app.route('/main/')
-@login_required
 def main():
     print("in main")
+    if not current_user.is_authenticated():
+        print 'UNAUTHORIZED'
+        return current_app.login_manager.unauthorized()
     tweets, user = get_main()
     follower_count, followee_count = get_follower_info(g.user.username)
     return render_template('main.html', user=user, tweets=tweets, followercount = follower_count, followeecount = followee_count)

@@ -1,10 +1,9 @@
 [aws:elasticbeanstalk:application:environment]
-DJANGO_SETTINGS_MODULE=
-PARAM1=
-PARAM2=
-PARAM4=
-PARAM3=
-PARAM5=
+MYSQL_DATABASE_HOST=aa1n7ic9s2l7ubp.ckzf6fd8myqs.us-east-1.rds.amazonaws.com
+MYSQL_DATABASE_PORT=3306
+MYSQL_DATABASE_USER=ebroot
+MYSQL_DATABASE_PASSWORD=password
+MYSQL_DATABASE_DB=AWSEBRDSDatabase
 
 [aws:elasticbeanstalk:container:python]
 WSGIPath=application.py
