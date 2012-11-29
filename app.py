@@ -49,7 +49,7 @@ def connect_db(): return mysql.connect()
 def before_request():
     print("before request")
     g.user = current_user
-    print current_user
+    print ('user_id' in session, "in session?")
     g.db = connect_db()
 
 @app.teardown_request
@@ -74,7 +74,7 @@ def login():
         else:
             flash('You were logged in')
             print "logged in"
-            login_user(user)
+            login_user(user, remember=True)
             return redirect(url_for('main'))
 
     return render_template('login.html', error=error)
@@ -102,6 +102,7 @@ def profile():
     return render_template('profile.html', user=user)
 
 @app.route('/main/')
+@login_required
 def main():
     print("in main")
     if not current_user.is_authenticated():
