@@ -50,6 +50,7 @@ def before_request():
     print("before request")
     print ('username' in session, "in session?")
     g.db = connect_db()
+    g.user = None
     if "username" in session:
         g.user = get_user(session['username'])
 
@@ -92,7 +93,6 @@ def logout():
 
 
 @app.route('/profile/', methods=['GET', 'POST'])
-@login_required
 def profile():
     user = get_user(g.user.username)
     user.img = gravatar_url(user.email,140)
