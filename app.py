@@ -46,6 +46,7 @@ def connect_db(): return mysql.connect()
 
 @app.before_request
 def before_request():
+    print session.keys(), session.values()
     print("before request")
     print ('username' in session, "in session?")
     g.db = connect_db()
