@@ -53,7 +53,7 @@ def before_request():
         g.user = get_user(session['username'])
 
 
-@app.teardown_appcontext
+@app.teardown_request
 def tear_down(exception):
     print "tearing down"
     g.db.close()
