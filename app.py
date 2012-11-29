@@ -53,11 +53,6 @@ def before_request():
         g.user = get_user(session['username'])
 
 
-@app.teardown_request
-def tear_down(exception):
-    print "tearing down"
-    g.db.close()
-
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
     """Logs the user in."""
