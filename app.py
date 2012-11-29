@@ -32,7 +32,7 @@ login_manager.login_view = "login"
 
 @login_manager.user_loader
 def load_user(username):
-    print "loding user.."
+    print "loading user.."
     g.db = connect_db()
     u = get_user(username)
     print("user: " + u.username)
@@ -49,6 +49,7 @@ def connect_db(): return mysql.connect()
 def before_request():
     print("before request")
     g.user = current_user
+    print current_user
     g.db = connect_db()
 
 @app.teardown_request
@@ -62,7 +63,7 @@ def login():
 
     error = None
     if request.method == 'POST':
-        print("posted")
+        print("login hit")
         user = get_user(request.form['username'])
         if user is None:
             error = 'Invalid username'
