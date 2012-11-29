@@ -2,7 +2,7 @@ from flask.ext.login import *
 from flask.ext.mysql import MySQL
 import os
 from flask import Flask, request, session, url_for, redirect, \
-     render_template, g, flash
+     render_template, g, flash, _app_ctx_stack
 from data import *
 from werkzeug import check_password_hash, generate_password_hash
 import config
@@ -29,7 +29,6 @@ def connect_db(): return mysql.connect()
 
 login_manager = LoginManager()
 login_manager.login_view = "login"
-login_manager.init_app(app)
 
 
 @login_manager.user_loader
@@ -40,7 +39,6 @@ def load_user(username):
     print("user: " + u.username)
     return u
 
-
 @app.route('/')
 def home(): return render_template('home.html')
 
@@ -49,11 +47,13 @@ def connect_db(): return mysql.connect()
 @app.before_request
 def before_request():
     print("before request")
-    g.user = current_user
-    print ('user_id' in session, "in session?")
+    print ('username' in session, "in session?")
     g.db = connect_db()
+    if "username" in session:
+        g.user = get_user(session['username'])
 
-@app.teardown_request
+
+@app.teardown_appcontext
 def tear_down(exception):
     print "tearing down"
     g.db.close()
@@ -87,13 +87,11 @@ def about(): return render_template('about.html')
 
 
 @app.route('/logout')
-@login_required
 def logout():
     """Logs the user out."""
-    logout_user()
+    session.pop('username', None)
     flash('You were logged out')
     return redirect(url_for('home'))
-
 
 
 @app.route('/profile/', methods=['GET', 'POST'])
