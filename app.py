@@ -29,6 +29,8 @@ def connect_db(): return mysql.connect()
 
 login_manager = LoginManager()
 login_manager.login_view = "login"
+login_manager.init_app(app)
+
 
 @login_manager.user_loader
 def load_user(username):
@@ -38,7 +40,6 @@ def load_user(username):
     print("user: " + u.username)
     return u
 
-login_manager.init_app(app)
 
 @app.route('/')
 def home(): return render_template('home.html')
@@ -75,6 +76,7 @@ def login():
             flash('You were logged in')
             print "logged in"
             login_user(user, remember=True)
+            print ('user_id' in session, "in session login?")
             return redirect(url_for('main'))
 
     return render_template('login.html', error=error)
@@ -104,7 +106,7 @@ def profile():
 @app.route('/main/')
 @login_required
 def main():
-    print("in main")
+    print("in main", g.user,"g.user", 'user_id' in session, "in session?")
     if not current_user.is_authenticated():
         print 'UNAUTHORIZED'
         return current_app.login_manager.unauthorized()
