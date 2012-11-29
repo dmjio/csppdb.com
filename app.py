@@ -53,6 +53,7 @@ def before_request():
 
 @app.teardown_request
 def tear_down(exception):
+    print "tearing down"
     g.db.close()
 
 @app.route('/login/', methods=['GET', 'POST'])
@@ -99,7 +100,6 @@ def profile():
     user = get_user(g.user.username)
     user.img = gravatar_url(user.email,140)
     return render_template('profile.html', user=user)
-
 
 @app.route('/main/')
 @login_required

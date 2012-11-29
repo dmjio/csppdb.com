@@ -52,7 +52,7 @@
       <file leaf-file-name="app.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="106" column="18" selection-start="3059" selection-end="3059" vertical-scroll-proportion="0.49880096">
+            <state line="102" column="0" selection-start="3015" selection-end="3015" vertical-scroll-proportion="0.20460358">
               <folding />
             </state>
           </provider>
@@ -394,7 +394,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="100" />
+      <option name="time" value="101" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -491,7 +491,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="106" column="18" selection-start="3059" selection-end="3059" vertical-scroll-proportion="0.49880096">
+        <state line="102" column="0" selection-start="3015" selection-end="3015" vertical-scroll-proportion="0.20460358">
           <folding />
         </state>
       </provider>
