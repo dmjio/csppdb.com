@@ -28,14 +28,14 @@ def get_tags(tag='first'):
     for i in tags: i['IMG'] = gravatar_url(i['Email'], 30)
     return tags
 
-def get_followers(username):
-    sql = "SELECT * FROM Users u WHERE u.Username in (SELECT Follower FROM Followers where User = %s);" % stringify(username)
+def get_followers():
+    sql = "SELECT * FROM Users u WHERE u.Username in (SELECT Follower FROM Followers where User = %s);" % stringify(g.user.username)
     followers = get_data(sql)
     for i in followers: i['IMG'] = gravatar_url(i['Email'], 30)
     return followers
 
-def get_followees(username):
-    sql = "SELECT * FROM Users u WHERE u.Username in (SELECT User FROM Followers where Follower = %s);" % stringify(username)
+def get_followees():
+    sql = "SELECT * FROM Users u WHERE u.Username in (SELECT User FROM Followers where Follower = %s);" % stringify(g.user.username)
     followees = get_data(sql)
     for i in followees: i['IMG'] = gravatar_url(i['Email'], 30)
     return followees
@@ -69,8 +69,8 @@ def create_tweet(tweet):
             sql = "call ADD_URL(%s, %s)" % (stringify(word), id,)
             exec_sql(sql)
 
-def get_people_to_follow(user):
-    sql = "SELECT * FROM USERS u WHERE u.Username NOT IN (SELECT f.User from FOLLOWERS f where f.Follower = %s) and u.Username != %s;" % (stringify(user), stringify(user))
+def get_people_to_follow():
+    sql = "SELECT * FROM USERS u WHERE u.Username NOT IN (SELECT f.User from FOLLOWERS f where f.Follower = %s) and u.Username != %s;" % (stringify(g.user.username), stringify(g.user.username))
     users = get_data(sql)
     return users
 
@@ -94,10 +94,10 @@ def get_user(username):
     else:
         return None
 
-def get_follower_info(username):
-    sql = 'select count(*) as "count" from followers f where f.user = %s' % stringify(username)
+def get_follower_info():
+    sql = 'select count(*) as "count" from followers f where f.user = %s' % stringify(g.user.username)
     people_that_follow_me = get_data(sql)
-    sql = 'select count(*) "count" from followers f where f.follower = %s' % stringify(username)
+    sql = 'select count(*) "count" from followers f where f.follower = %s' % stringify(g.user.username)
     people_i_follow = get_data(sql)
     return people_i_follow[0]['count'], people_that_follow_me[0]['count']
 

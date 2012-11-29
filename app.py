@@ -28,7 +28,9 @@ def connect_db(): return mysql.connect()
 ###
 
 def check_auth():
+    g.user = None
     if 'username' in session:
+        g.user = get_user(session['username'])
         return
     return redirect(url_for('login'))
 
@@ -95,27 +97,20 @@ def logout():
 @app.route('/profile/', methods=['GET', 'POST'])
 def profile():
     check_auth()
-    user = get_user(g.user.username)
-    user.img = gravatar_url(user.email,140)
-    return render_template('profile.html', user=user)
+    g.user.img = gravatar_url(g.user.email,140)
+    return render_template('profile.html', user=g.user)
 
 @app.route('/main/')
 def main():
     check_auth()
-    print session.keys(), session.values()
-    print("in main", 'username' in session)
-    if 'username' in session:
-        print "username in session"
-        g.user = get_user(session['username'])
-        tweets, user = get_main()
-        follower_count, followee_count = get_follower_info(session['username'])
-        return render_template('main.html', user=user, tweets=tweets, followercount = follower_count, followeecount = followee_count)
-    return redirect(url_for('login'))
+    tweets, user = get_main()
+    follower_count, followee_count = get_follower_info()
+    return render_template('main.html', user=g.user, tweets=tweets, followercount = follower_count, followeecount = followee_count)
 
 @app.route('/people/', methods=['GET', 'POST'])
 def find_people():
     check_auth()
-    users = get_people_to_follow(g.user.username)
+    users = get_people_to_follow()
     for u in users: u['IMG'] = gravatar_url(u['Email'], 40)
     return render_template('find_people.html', users=users, user=g.user)
 
@@ -133,20 +128,18 @@ def find_tags():
 @app.route('/followers/', methods=['GET', 'POST'])
 def followers():
     check_auth()
-    followers = get_followers(g.user.username)
-    user = get_user(g.user.username)
-    user.img = gravatar_url(user.email, 140)
-    follower_count, followee_count = get_follower_info(g.user.username)
-    return render_template('followers.html', followers=followers, user=user, followercount = follower_count, followeecount = followee_count)
+    followers = get_followers()
+    g.user.img = gravatar_url(g.user.email, 140)
+    follower_count, followee_count = get_follower_info()
+    return render_template('followers.html', followers=followers, user=g.user, followercount = follower_count, followeecount = followee_count)
 
 @app.route('/followees/', methods=['GET', 'POST'])
 def followees():
     check_auth()
-    followees = get_followees(g.user.username)
-    user = get_user(g.user.username)
-    user.img = gravatar_url(user.email, 140)
-    follower_count, followee_count = get_follower_info(g.user.username)
-    return render_template('followees.html', followees=followees, user=user, followercount = follower_count, followeecount = followee_count)
+    followees = get_followees()
+    g.user.img = gravatar_url(g.user.email, 140)
+    follower_count, followee_count = get_follower_info()
+    return render_template('followees.html', followees=followees, user=g.user, followercount = follower_count, followeecount = followee_count)
 
 @app.route('/follow/', methods=['GET', 'POST'])
 def follow():
@@ -170,8 +163,6 @@ def tweet():
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
     check_auth()
-    if request.method == 'GET':
-        if current_user is user_logged_in: logout_user()
     error = None
     if request.method == 'POST':
         if not request.form['username']:
@@ -189,7 +180,7 @@ def register():
                             request.form['email'],
                             generate_password_hash(request.form['password']))
 
-            login_user(user)
+            session['username'] = request.form['username']
             flash('You were successfully registered')
             return redirect(url_for('main'))
     return render_template('register.html', error=error)
