@@ -64,7 +64,6 @@ def login():
     if request.method == 'POST':
         print("posted")
         user = get_user(request.form['username'])
-        print("getting user: " + user.username)
         if user is None:
             error = 'Invalid username'
             print error
