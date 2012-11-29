@@ -27,22 +27,21 @@ def connect_db(): return mysql.connect()
 # Routing for your application.
 ###
 
-login_manager = LoginManager()
-login_manager.login_view = "login"
+def check_auth():
+    if 'username' in session:
+        return
+    return redirect(url_for('login'))
 
-
-@login_manager.user_loader
-def load_user(username):
-    print "loading user.."
-    g.db = connect_db()
-    u = get_user(username)
-    print("user: " + u.username)
-    return u
 
 @app.route('/')
 def home(): return render_template('home.html')
 
 def connect_db(): return mysql.connect()
+
+@app.teardown_request
+def teardown_request(exception):
+    if exception: print exception
+    g.db.close()
 
 @app.before_request
 def before_request():
@@ -86,6 +85,7 @@ def about(): return render_template('about.html')
 
 @app.route('/logout')
 def logout():
+    check_auth()
     """Logs the user out."""
     session.pop('username', None)
     flash('You were logged out')
@@ -94,12 +94,14 @@ def logout():
 
 @app.route('/profile/', methods=['GET', 'POST'])
 def profile():
+    check_auth()
     user = get_user(g.user.username)
     user.img = gravatar_url(user.email,140)
     return render_template('profile.html', user=user)
 
 @app.route('/main/')
 def main():
+    check_auth()
     print session.keys(), session.values()
     print("in main", 'username' in session)
     if 'username' in session:
@@ -111,15 +113,15 @@ def main():
     return redirect(url_for('login'))
 
 @app.route('/people/', methods=['GET', 'POST'])
-@login_required
 def find_people():
+    check_auth()
     users = get_people_to_follow(g.user.username)
     for u in users: u['IMG'] = gravatar_url(u['Email'], 40)
     return render_template('find_people.html', users=users, user=g.user)
 
 @app.route('/tags/', methods=['GET', 'POST'])
-@login_required
 def find_tags():
+    check_auth()
     if request.method == "GET":
         tags = get_top_ten_recent_tags()
     else:
@@ -129,8 +131,8 @@ def find_tags():
     return render_template('tags.html', tags=tags, user=g.user)
 
 @app.route('/followers/', methods=['GET', 'POST'])
-@login_required
 def followers():
+    check_auth()
     followers = get_followers(g.user.username)
     user = get_user(g.user.username)
     user.img = gravatar_url(user.email, 140)
@@ -138,8 +140,8 @@ def followers():
     return render_template('followers.html', followers=followers, user=user, followercount = follower_count, followeecount = followee_count)
 
 @app.route('/followees/', methods=['GET', 'POST'])
-@login_required
 def followees():
+    check_auth()
     followees = get_followees(g.user.username)
     user = get_user(g.user.username)
     user.img = gravatar_url(user.email, 140)
@@ -147,26 +149,27 @@ def followees():
     return render_template('followees.html', followees=followees, user=user, followercount = follower_count, followeecount = followee_count)
 
 @app.route('/follow/', methods=['GET', 'POST'])
-@login_required
 def follow():
+    check_auth()
     follow_user(g.user.username, request.form['Username'])
     return redirect(url_for('main'))
 
 @app.route('/unfollow/', methods=['GET', 'POST'])
-@login_required
 def unfollow():
+    check_auth()
     unfollow_user(request.form['Username'], g.user.username)
     return redirect(url_for('followees'))
 
 @app.route('/tweet/', methods=['GET', 'POST'])
-@login_required
 def tweet():
+    check_auth()
     if request.method == "POST": create_tweet(request.form['tweet'])
     return redirect(url_for('main'))
 
 
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
+    check_auth()
     if request.method == 'GET':
         if current_user is user_logged_in: logout_user()
     error = None
