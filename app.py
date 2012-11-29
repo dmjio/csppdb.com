@@ -2,7 +2,7 @@ from flask.ext.login import *
 from flask.ext.mysql import MySQL
 import os
 from flask import Flask, request, session, url_for, redirect, \
-     render_template, g, flash, _app_ctx_stack
+     render_template, g, flash, globals
 from data import *
 from werkzeug import check_password_hash, generate_password_hash
 import config
@@ -47,6 +47,8 @@ def teardown_request(exception):
 
 @app.before_request
 def before_request():
+    print "globals", globals
+    session = globals.session
     print session.keys(), session.values()
     print("before request")
     print ('username' in session, "in session?")
