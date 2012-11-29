@@ -105,7 +105,8 @@ def profile():
 
 @app.route('/main/')
 def main():
-    print("in main", g.user,"g.user", 'user_id' in session, "in session?")
+    print session.keys(), session.values()
+    print("in main", 'username' in session)
     if 'username' in session:
         print "username in session"
         g.user = get_user(session['username'])
