@@ -76,6 +76,7 @@ def login():
             flash('You were logged in')
             if login_user(user, remember=True):
                 print "logged in"
+                session['username'] = request.form['username']
                 print error, "error"
                 print ('user_id' in session, "in session login?")
                 return redirect(url_for('main'))
@@ -105,15 +106,15 @@ def profile():
     return render_template('profile.html', user=user)
 
 @app.route('/main/')
-@login_required
 def main():
     print("in main", g.user,"g.user", 'user_id' in session, "in session?")
-    if not current_user.is_authenticated():
-        print 'UNAUTHORIZED'
-        return current_app.login_manager.unauthorized()
-    tweets, user = get_main()
-    follower_count, followee_count = get_follower_info(g.user.username)
-    return render_template('main.html', user=user, tweets=tweets, followercount = follower_count, followeecount = followee_count)
+    if 'username' in session:
+        print "username in session"
+        g.user = get_user(session['username'])
+        tweets, user = get_main()
+        follower_count, followee_count = get_follower_info(session['username'])
+        return render_template('main.html', user=user, tweets=tweets, followercount = follower_count, followeecount = followee_count)
+    return redirect(url_for('login'))
 
 @app.route('/people/', methods=['GET', 'POST'])
 @login_required
