@@ -1,8 +1,7 @@
-from flask.ext.login import *
 from flask.ext.mysql import MySQL
 import os
 from flask import Flask, request, session, url_for, redirect, \
-     render_template, g, flash, globals
+     render_template, g, flash
 from data import *
 from werkzeug import check_password_hash, generate_password_hash
 import config
@@ -18,8 +17,10 @@ app.config['MYSQL_DATABASE_DB'] = os.environ['MYSQL_DATABASE_DB'] if 'MYSQL_DATA
 
 mysql.init_app(app)
 
-if 'SECRET_KEY' in os.environ: app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
-else: app.config['SECRET_KEY'] = os.urandom(24)
+if 'SECRET_KEY' in os.environ: 
+    app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+else: 
+    app.config['SECRET_KEY'] = os.urandom(24)
 
 def connect_db(): return mysql.connect()
 
