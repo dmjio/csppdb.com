@@ -60,7 +60,8 @@ def before_request():
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
     """Logs the user in."""
-
+    if 'username' in session:
+        return redirect(url_for('main'))
     error = None
     if request.method == 'POST':
         print("login hit")
