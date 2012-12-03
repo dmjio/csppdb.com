@@ -44,7 +44,7 @@ def get_main():
     #get feed
     sql = "SELECT t.*, u.img, u.username, u.email FROM TWEETS t INNER JOIN USERS u on t.username = u.username;"
     tweets = get_data(sql)
-    for i in tweets: i['img'] = gravatar_url(i['email'], 30)
+    for i in tweets: i['IMG'] = gravatar_url(i['email'], 30)
     #get user info
     user = get_user(g.user.username)
     user.img = gravatar_url(user.email, 140)
