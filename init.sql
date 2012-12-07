@@ -124,7 +124,6 @@ DROP PROCEDURE IF EXISTS `ADD_FAVORITE` ;
 DROP PROCEDURE IF EXISTS `ADD_MENTION` ;
 DROP PROCEDURE IF EXISTS `LIKE_TWEET` ;
 
-
 -- Stored routine(s) 
 CREATE PROCEDURE ADD_USER(
   uUsername VARCHAR(25),
@@ -138,21 +137,17 @@ CREATE PROCEDURE UPDATE_USER(
   uFirst VARCHAR(45),
   uLast VARCHAR(45),
   uWeb VARCHAR(45),
-  uPopular INT,
   uEmail VARCHAR(100),
-  uBlurb VARCHAR(150),
-  uIMG VARCHAR(255))
-    UPDATE Users 
+  uBlurb VARCHAR(150))
+  UPDATE Users 
     SET
     First = uFirst, 
     Last = uLast, 
     Web = uWeb, 
-    Popular = uPopular, 
     Updated = NOW(), 
     Email = uEmail, 
-    Blurb = uBlurb, 
-    IMG = uIMG
-    WHERE UserName = uUsername;
+    Blurb = uBlurb
+  WHERE UserName = uUsername;
 
 -- Stored routine(s) 2
 CREATE PROCEDURE TWEETCOUNT() SELECT COUNT(*) as 'Total Tweet Count' FROM Tweets;

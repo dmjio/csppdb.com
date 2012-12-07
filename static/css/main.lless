@@ -10,4 +10,4 @@
 
 /* Apply custom highlight */
 ::-moz-selection{ .custom-highlight; }
-::selection { .custom-highlight; }
+::moz-selectionlection { .custom-highlight; }

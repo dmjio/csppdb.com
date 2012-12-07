@@ -17,16 +17,10 @@ app.config['MYSQL_DATABASE_DB'] = os.environ['MYSQL_DATABASE_DB'] if 'MYSQL_DATA
 
 mysql.init_app(app)
 
-if 'SECRET_KEY' in os.environ: 
-    app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
-else: 
-    app.config['SECRET_KEY'] = os.urandom(24)
+if 'SECRET_KEY' in os.environ: app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+else: app.config['SECRET_KEY'] = os.urandom(24)
 
 def connect_db(): return mysql.connect()
-
-###
-# Routing for your application.
-###
 
 def check_auth():
     g.user = None
@@ -37,7 +31,9 @@ def check_auth():
 
 
 @app.route('/')
-def home(): return render_template('home.html')
+def home(): 
+    if 'username' in session: return redirect(url_for('main'))
+    return render_template('home.html')
 
 def connect_db(): return mysql.connect()
 
@@ -62,6 +58,7 @@ def login():
     """Logs the user in."""
     if 'username' in session:
         return redirect(url_for('main'))
+
     error = None
     if request.method == 'POST':
         print("login hit")
@@ -86,7 +83,6 @@ def login():
 @app.route('/about/')
 def about(): return render_template('about.html')
 
-
 @app.route('/logout')
 def logout():
     check_auth()
@@ -95,34 +91,64 @@ def logout():
     flash('You were logged out')
     return redirect(url_for('home'))
 
-
 @app.route('/profile/', methods=['GET', 'POST'])
 def profile():
     check_auth()
+    g.user = get_user(session['username'])
+    g.user.img = gravatar_url(g.user.email, 140)
+    follower_count, followee_count = get_follower_info()
+    return render_template('profile.html', user=g.user, followercount = follower_count, followeecount = followee_count)
+
+@app.route('/edit/', methods=['GET', 'POST'])
+def edit_profile():
+    check_auth()
+
+    g.user = get_user(session['username'])
+
+    if request.method == 'POST':
+        print "in edit profile post"
+        update_user(request.form, session['username'])
+        return redirect(url_for('profile'))
+
+    g.user = get_user(session['username'])
     g.user.img = gravatar_url(g.user.email,140)
-    return render_template('profile.html', user=g.user)
+    follower_count, followee_count = get_follower_info()
+
+    return render_template('edit_profile.html', user=g.user, followercount = follower_count, followeecount = followee_count)
 
 @app.route('/main/')
-def main():
+def main(): 
     check_auth()
+    print "Checked auth"
     tweets, user = get_main()
+    g.user = user
     follower_count, followee_count = get_follower_info()
-    return render_template('main.html', user=g.user, tweets=tweets, followercount = follower_count, followeecount = followee_count)
+    return render_template('main.html', user=user, tweets=tweets, followercount = follower_count, followeecount = followee_count)
 
 @app.route('/people/', methods=['GET', 'POST'])
-def find_people():
+def find_people(): #get's newest users 
     check_auth()
-    users = get_people_to_follow()
-    for u in users: u['IMG'] = gravatar_url(u['Email'], 40)
+    if request.method == 'POST':
+        print request.form
+        users = search_people(request.form['username'])
+        for u in users: u['IMG'] = gravatar_url(u['Email'], 40)
+    else:         
+        users = get_people_to_follow()
+        for u in users: u['IMG'] = gravatar_url(u['Email'], 40)
+
     return render_template('find_people.html', users=users, user=g.user)
 
 @app.route('/tags/', methods=['GET', 'POST'])
 def find_tags():
     check_auth()
     if request.method == "GET":
+        print "getting tags"
         tags = get_top_ten_recent_tags()
+        for u in tags: u['IMG'] = gravatar_url(u['Email'], 40)
     else:
-        tags = get_tags()
+        print "finding tags"
+        print request.form
+        tags = get_tags(request.form['tagname'])
         for u in tags: u['IMG'] = gravatar_url(u['Email'], 40)
 
     return render_template('tags.html', tags=tags, user=g.user)
@@ -147,7 +173,7 @@ def followees():
 def follow():
     check_auth()
     follow_user(g.user.username, request.form['Username'])
-    return redirect(url_for('main'))
+    return redirect(url_for('followees'))
 
 @app.route('/unfollow/', methods=['GET', 'POST'])
 def unfollow():
@@ -177,7 +203,6 @@ def register():
         elif get_user(request.form['username']) is not None:
             error = 'The username is already taken'
         else:
-
             user = add_user(request.form['username'],
                             request.form['email'],
                             generate_password_hash(request.form['password']))

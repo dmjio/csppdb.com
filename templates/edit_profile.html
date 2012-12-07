@@ -46,72 +46,66 @@
             </div>
             <div class="span5">
                 <ul class="nav nav-pills">
-                    <li class="active" ><a href="{{ url_for('profile') }}">Profile</a></li>
-                    <li><a href="{{ url_for('edit_profile') }}">Edit</a></li>
+                    <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                    <li class="active"><a href="{{ url_for('edit_profile') }}">Edit</a></li>
                 </ul>
-            
-
-    <form class="form-horizontal">
-        <table class="table table-striped table-hover">
+                <form class="form-horizontal" action="{{ url_for('edit_profile') }}" method="POST">
+                    <table class="table table-striped table-hover">
                     <!-- First -->
-                    <tr>
-                        <td>
+                    <tr><td>
                   <div class="control-group">
-                    <label class="control-label" for="First">First:</label>
-                    <div class="controls" style="line-height:25px">
-                      <b>{{ user['first'] }}</b>
+                    <label class="control-label" for="first">first:</label>
+                    <div class="controls">
+                      <input type="text" name="first" value="{{ user['first'] }}" placeholder="First Name">
                     </div>
                   </div>
-              </td>
-          </tr>
-              <tr>
-              <td>
+              </tr></td>
+              <tr><td>
                   <!-- Last -->
                   <div class="control-group">
-                    <label class="control-label" for="Last">Last:</label>
-                      <div class="controls" style="line-height:25px">
-                      <b>{{ user['last'] }}</b>
+                    <label class="control-label" for="last">Last:</label>
+                    <div class="controls">
+                      <input type="text" name="last" value="{{ user['last'] }}" placeholder="Last Name">
                     </div>
                   </div>
-              </td>
-          </tr>
+                  </tr></td>
+                    <tr><td>
                    <!-- Website -->
-                   <tr>
-                   <td>
                   <div class="control-group">
-                    <label class="control-label" for="Website">Website:</label>
-                      <div class="controls" style="line-height:25px">
-                      <b>{{ user['web'] }}</b>
+                    <label class="control-label" for="web">Website:</label>
+                    <div class="controls">
+                      <input type="text" name="web" value="{{ user['web'] }}" placeholder="Website">
                     </div>
                   </div>
-              </td>
-          </tr>
+                  </tr></td>
+                    <tr><td>
                    <!-- Email -->
-                   <tr>
-                   <td>
                   <div class="control-group">
-                    <label class="control-label" for="Last">Email:</label>
-                      <div class="controls" style="line-height:25px">
-                      <b>{{ user['email'] }}</b>
+                    <label class="control-label" for="email">Email:</label>
+                    <div class="controls">
+                      <input type="text" name="email" value="{{ user['email'] }}" placeholder="Email">
                     </div>
                   </div>
-              </td>
-          </tr>
+                  </tr></td>
+                    <tr><td>
                    <!-- Blurb -->
-                   <tr>
-                   <td>
                   <div class="control-group">
-                    <label class="control-label" for="Blurb">Blurb:</label>
-                      <div class="controls" style="line-height:25px">
-                      <b>{{ user['blurb'] }}</b>
+                    <label class="control-label" for="blurb">Blurb:</label>
+                    <div class="controls">
+                      <input type="text" name="blurb" value="{{ user['blurb'] }}" placeholder="Blurb Name">
                     </div>
                   </div>
-              </td>
-          </tr>
-        </table>
-                
+                  </tr></td>
+                    <tr><td>
+
+                  <div class="control-group">
+                    <div class="controls">
+                      <button type="submit" class="btn">Update</button>
+                    </div>
+                  </div>
+                  </tr></td>
+              </table>
                 </form>
-                          
             </div>
         </div>
     </div>

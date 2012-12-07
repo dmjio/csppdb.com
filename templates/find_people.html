@@ -38,7 +38,7 @@
             <li><a href="{{ url_for('logout') }}">Logout {{ (user.username) }} </a></li>
 
         </ul>
-        <h3 class="muted">CSPPDB Twitter Clone</h3>
+        <h3 class="muted"><a href="{{ url_for('main') }}">CSPPDB Twitter Clone</a></h3>
     </div>
 
     <hr>
@@ -46,8 +46,8 @@
     <div class="container">
         <div class="row">
             <div class="span12">
-                <form class="form-search">
-                    <input type="text" class="input-medium search-query">
+                <form class="form-search" action="{{ url_for('find_people') }}" method="POST">
+                    <input type="text" name="username" class="input-medium search-query">
                     <button type="submit" class="btn">Search</button>
                 </form>
             </div>
@@ -84,7 +84,7 @@
     <hr>
 
     <div class="footer">
-        <p>&copy; Company 2012</p>
+        <p>&copy; CSPPDB 2012</p>
     </div>
 
 </div> <!-- /container -->
