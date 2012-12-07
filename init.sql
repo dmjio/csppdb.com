@@ -17,7 +17,7 @@ CREATE  TABLE IF NOT EXISTS `Users` (
   `Email` VARCHAR(100) NULL ,
   `Blurb` VARCHAR(150) NULL ,
   `IMG` VARCHAR(255) NULL ,
-  PRIMARY KEY (`Username`));
+  PRIMARY KEY (`Username`)) ENGINE=INNODB;
 
 -- -----------------------------------------------------
 -- Table `Twitter`.`Tweets`
@@ -29,7 +29,7 @@ CREATE  TABLE IF NOT EXISTS `Tweets` (
   `Content` VARCHAR(150) NOT NULL ,
   `Username` VARCHAR(25) NOT NULL ,
   `Created` DATETIME NOT NULL,
-  PRIMARY KEY (`TweetID`, `Username`));
+  PRIMARY KEY (`TweetID`, `Username`))ENGINE=INNODB;
 
 -- -----------------------------------------------------
 -- Table `Twitter`.`Hash`
@@ -41,7 +41,7 @@ CREATE  TABLE IF NOT EXISTS `Hash` (
   `Tag` VARCHAR(45) NOT NULL ,
   `TweetID` INT UNSIGNED NOT NULL ,
   `Created` DATETIME NOT NULL,
-  PRIMARY KEY (`HashTagID`, `TweetID`));
+  PRIMARY KEY (`HashTagID`, `TweetID`))ENGINE=INNODB;
 
 -- -----------------------------------------------------
 -- Table `Twitter`.`Mentions`
@@ -53,7 +53,7 @@ CREATE  TABLE IF NOT EXISTS `Mentions` (
   `TweetID` INT UNSIGNED NOT NULL ,
   `Username` VARCHAR(25) NOT NULL ,   
   `Created` DATETIME NOT NULL,
-  PRIMARY KEY (`MentionID`,`UserName`, `TweetID`));
+  PRIMARY KEY (`MentionID`,`UserName`, `TweetID`))ENGINE=INNODB;
 
 -- -----------------------------------------------------
 -- Table `Twitter`.`Urls`
@@ -65,7 +65,7 @@ CREATE  TABLE IF NOT EXISTS `Urls` (
   `TweetID` INT UNSIGNED NOT NULL ,
   `URL` VARCHAR(150) NOT NULL ,
   `Created` DATETIME NOT NULL,
-  PRIMARY KEY (`UrlID`, `TweetID`));
+  PRIMARY KEY (`UrlID`, `TweetID`))ENGINE=INNODB;
 
 -- -----------------------------------------------------
 -- Table `Twitter`.`Followers`
@@ -75,7 +75,7 @@ DROP TABLE IF EXISTS `Followers` ;
 CREATE  TABLE IF NOT EXISTS `Followers` (
   `User` VARCHAR(25) NOT NULL ,
   `Follower` VARCHAR(25) NOT NULL ,
-  PRIMARY KEY (`User`, `Follower`));
+  PRIMARY KEY (`User`, `Follower`))ENGINE=INNODB;
 
 -- -----------------------------------------------------
 -- Table `Twitter`.`ReTweets`
@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS `ReTweets` (
   `Username` VARCHAR(25) NOT NULL,
   `TweetID` INT UNSIGNED NOT NULL,
   `Created` DATETIME NOT NULL,
-  PRIMARY KEY (`Username`, `TweetID`));
+  PRIMARY KEY (`Username`, `TweetID`))ENGINE=INNODB;
 
 -- -----------------------------------------------------
 -- Table `Twitter`.`Favorites`
@@ -96,7 +96,7 @@ DROP TABLE IF EXISTS `Favorites` ;
 CREATE  TABLE IF NOT EXISTS `Favorites` (
   `Username` VARCHAR(25) NOT NULL ,
   `TweetID` INT UNSIGNED NOT NULL ,
-  PRIMARY KEY (`Username`, `TweetID`));
+  PRIMARY KEY (`Username`, `TweetID`))ENGINE=INNODB;
 
 -- -----------------------------------------------------
 -- Table `Twitter`.`Likes`
@@ -106,7 +106,7 @@ DROP TABLE IF EXISTS `Likes` ;
 CREATE TABLE IF NOT EXISTS `Likes` (
   `TweetID` INT UNSIGNED NOT NULL ,
   `Username` VARCHAR(25) NOT NULL ,
-  PRIMARY KEY (`TweetID`, `Username`));
+  PRIMARY KEY (`TweetID`, `Username`))ENGINE=INNODB;
 
 
 DROP PROCEDURE IF EXISTS `ADD_USER` ;

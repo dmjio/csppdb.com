@@ -1,6 +1,6 @@
 from flask.ext.mysql import MySQL
 import os
-from flask import Flask, request, session, url_for, redirect, \
+from flask import Flask, request, jsonify, session, url_for, redirect, \
      render_template, g, flash
 from data import *
 from werkzeug import check_password_hash, generate_password_hash
@@ -124,6 +124,17 @@ def main():
     g.user = user
     follower_count, followee_count = get_follower_info()
     return render_template('main.html', user=user, tweets=tweets, followercount = follower_count, followeecount = followee_count)
+
+@app.route('/userdata/', methods=['GET', 'POST'])
+def user_data():
+    print "ok"
+    username = request.form['username']
+    print username
+    user = get_user_json(username)
+    img, first, last, username, web, blurb = user['IMG'], user['First'], user['Last'], username, user['Web'], user['Blurb']
+    if user is not None:
+        return jsonify(img=img, first=first, last=last, username=username, web=web, blurb=blurb)
+    return None
 
 @app.route('/people/', methods=['GET', 'POST'])
 def find_people(): #get's newest users 

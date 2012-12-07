@@ -106,6 +106,13 @@ def get_user(username):
     if len(user) and user[0] is not None: return User(user[0])
     else: return None
 
+def get_user_json(username):
+    sql = 'select * from users u where u.username = %s' % stringify(username)
+    user = get_data(sql)
+    if len(user) and user[0] is not None: 
+        return user[0]
+    else: return None
+
 def get_follower_info():
     sql = 'select count(*) as "count" from followers f where f.user = %s' % stringify(g.user.username)
     people_that_follow_me = get_data(sql)

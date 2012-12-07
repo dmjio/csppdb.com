@@ -67,7 +67,7 @@
                         {%  for user in users %}
                         <tr>
                             <td><img src="{{ user['IMG'] }}" class="img-rounded"></td>
-                            <td>{{ user['Username'] }}</td>
+                            <td><a class="userid" data-toggle="modal" href="#userModal">{{ user['Username'] }}</a></td>
                             <td>{{ user['Blurb'] }}</td>
                             <td>{{ user['Created'] }}</td>
                             <td><button type="submit" name="Username" value="{{ user['Username'] }}" class="btn btn-primary">Follow</button></td>

@@ -44,7 +44,7 @@
                     {%  for tweet in tags %}
                         <tr>
                             <td><img src="{{ tweet['IMG'] }}" class="img-rounded"></td>
-                            <td>{{ tweet['Username'] }}</td>
+                            <td><a class="userid" data-toggle="modal" href="#userModal">{{ tweet['Username'] }}</a></td>
                             <td>{{ tweet['Content'] }}</td>
                             <td>{{ tweet['Created'] }}</td>
                         </tr>
