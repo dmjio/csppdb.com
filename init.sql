@@ -1,8 +1,9 @@
 
-
 -- -----------------------------------------------------
 -- Table `Twitter`.`Users`
 -- -----------------------------------------------------
+SET foreign_key_checks = 0;
+
 DROP TABLE IF EXISTS `Users` ;
 
 CREATE  TABLE IF NOT EXISTS `Users` (
@@ -29,6 +30,7 @@ CREATE  TABLE IF NOT EXISTS `Tweets` (
   `Content` VARCHAR(150) NOT NULL ,
   `Username` VARCHAR(25) NOT NULL ,
   `Created` DATETIME NOT NULL,
+  FOREIGN KEY(Username) REFERENCES Users(Username),
   PRIMARY KEY (`TweetID`, `Username`))ENGINE=INNODB;
 
 -- -----------------------------------------------------
@@ -41,6 +43,7 @@ CREATE  TABLE IF NOT EXISTS `Hash` (
   `Tag` VARCHAR(45) NOT NULL ,
   `TweetID` INT UNSIGNED NOT NULL ,
   `Created` DATETIME NOT NULL,
+    FOREIGN KEY(TweetID) REFERENCES Tweets(TweetID),
   PRIMARY KEY (`HashTagID`, `TweetID`))ENGINE=INNODB;
 
 -- -----------------------------------------------------
@@ -53,7 +56,10 @@ CREATE  TABLE IF NOT EXISTS `Mentions` (
   `TweetID` INT UNSIGNED NOT NULL ,
   `Username` VARCHAR(25) NOT NULL ,   
   `Created` DATETIME NOT NULL,
-  PRIMARY KEY (`MentionID`,`UserName`, `TweetID`))ENGINE=INNODB;
+    FOREIGN KEY(Username) REFERENCES Users(Username),
+    FOREIGN KEY(TweetID) REFERENCES Tweets(TweetID),
+
+  PRIMARY KEY (`MentionID`,`Username`, `TweetID`))ENGINE=INNODB;
 
 -- -----------------------------------------------------
 -- Table `Twitter`.`Urls`
@@ -65,6 +71,7 @@ CREATE  TABLE IF NOT EXISTS `Urls` (
   `TweetID` INT UNSIGNED NOT NULL ,
   `URL` VARCHAR(150) NOT NULL ,
   `Created` DATETIME NOT NULL,
+  FOREIGN KEY(TweetID) REFERENCES Tweets(TweetID),
   PRIMARY KEY (`UrlID`, `TweetID`))ENGINE=INNODB;
 
 -- -----------------------------------------------------
@@ -75,6 +82,8 @@ DROP TABLE IF EXISTS `Followers` ;
 CREATE  TABLE IF NOT EXISTS `Followers` (
   `User` VARCHAR(25) NOT NULL ,
   `Follower` VARCHAR(25) NOT NULL ,
+    FOREIGN KEY(User) REFERENCES Users(Username),
+    FOREIGN KEY(Follower) REFERENCES Users(Username),
   PRIMARY KEY (`User`, `Follower`))ENGINE=INNODB;
 
 -- -----------------------------------------------------
@@ -86,6 +95,8 @@ CREATE TABLE IF NOT EXISTS `ReTweets` (
   `Username` VARCHAR(25) NOT NULL,
   `TweetID` INT UNSIGNED NOT NULL,
   `Created` DATETIME NOT NULL,
+  FOREIGN KEY(Username) REFERENCES Users(Username),
+  FOREIGN KEY(TweetID) REFERENCES Tweets(TweetID),
   PRIMARY KEY (`Username`, `TweetID`))ENGINE=INNODB;
 
 -- -----------------------------------------------------
@@ -106,6 +117,8 @@ DROP TABLE IF EXISTS `Likes` ;
 CREATE TABLE IF NOT EXISTS `Likes` (
   `TweetID` INT UNSIGNED NOT NULL ,
   `Username` VARCHAR(25) NOT NULL ,
+  FOREIGN KEY(Username) REFERENCES Users(Username),
+  FOREIGN KEY(TweetID) REFERENCES Tweets(TweetID),
   PRIMARY KEY (`TweetID`, `Username`))ENGINE=INNODB;
 
 
@@ -148,6 +161,8 @@ CREATE PROCEDURE UPDATE_USER(
     Email = uEmail, 
     Blurb = uBlurb
   WHERE UserName = uUsername;
+  
+SET foreign_key_checks = 1;
 
 -- Stored routine(s) 2
 CREATE PROCEDURE TWEETCOUNT() SELECT COUNT(*) as 'Total Tweet Count' FROM Tweets;

@@ -28,8 +28,7 @@ def check_auth():
         g.user = get_user(session['username'])
         return
     return redirect(url_for('login'))
-
-
+    
 @app.route('/')
 def home(): 
     if 'username' in session: return redirect(url_for('main'))
@@ -220,7 +219,7 @@ def register():
 
             session['username'] = request.form['username']
             flash('You were successfully registered')
-            return redirect(url_for('main'))
+            return redirect(url_for('edit_profile'))
     return render_template('register.html', error=error)
 
 ###
