@@ -17,21 +17,7 @@
 
     <hr>
 
-    <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="myModalLabel">New Tweet</h3>
-        </div>
-        <form action="{{ url_for('tweet') }}" method="POST">
-        <div class="modal-body">
-            <input placeholder="Tweet goes here..." name="tweet" type="text" value="{{ request.form.tweet }}" />
-        </div>
-        <div class="modal-footer">
-            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-            <button type="submit" class="btn btn-primary">Tweet</button>
-        </div>
-        </form>
-    </div>
+   
     <div class="container">
         <div class="row">
             <div class="span2">
@@ -48,6 +34,8 @@
                 <ul class="nav nav-pills">
                     <li class="active" ><a href="{{ url_for('profile') }}">Profile</a></li>
                     <li><a href="{{ url_for('edit_profile') }}">Edit</a></li>
+                   <li><a href="{{ url_for('favorites') }}">Favorites</a></li>
+
                 </ul>
             
 

@@ -197,13 +197,13 @@ VALUES (tTweetID, tUrl, NOW());
 
 -- Retweets
 CREATE PROCEDURE RETWEET (tUsername VARCHAR(25), tTweetID INT)
-INSERT INTO RETWEET (Username, TweetID, Created)
+INSERT INTO RETWEETS (Username, TweetID, Created)
 VALUES (tUsername, tTweetID, NOW());
 
 -- Favorites
 CREATE PROCEDURE ADD_FAVORITE (tUsername VARCHAR(25), tTweetID INT)
 INSERT INTO FAVORITES (TweetID, Username)
-VALUES (tUsername, tTweetID);
+VALUES (tTweetID, tUsername);
 
 -- Mention
 CREATE PROCEDURE ADD_MENTION(tTweetID INT, tUsername VARCHAR(25))
@@ -213,6 +213,6 @@ VALUES (tTweetID, tUsername, NOW());
 -- Favorites
 CREATE PROCEDURE LIKE_TWEET (tUsername VARCHAR(25), tTweetID INT)
 INSERT INTO Likes (TweetID, Username)
-VALUES (tUsername, tTweetID);
+VALUES (tTweetID, tUsername);
 
 

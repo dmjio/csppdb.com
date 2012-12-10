@@ -77,6 +77,12 @@
   <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.1/bootstrap.min.js"></script>
 
      {% include "modals.html" %}
-
+<script>
+  $(function(){
+    $('.submit').click(function(){
+      $(this).closest('form').submit();
+    });
+  });
+</script>
 </body>
 </html>

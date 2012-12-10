@@ -58,12 +58,41 @@ def get_followees():
 
 def get_main():
     #get feed
-    sql = "SELECT t.*, u.img, u.username, u.email FROM TWEETS t INNER JOIN USERS u on t.username = u.username ORDER BY t.Created DESC;"
+    user = get_user(g.user.username)
+    sql = "SELECT t.*, u.img, u.username, u.email, \
+    (SELECT COUNT(*) FROM ReTweets k WHERE k.username = '%s' AND k.tweetID = t.TweetID) as 'canRT', \
+    (SELECT COUNT(*) FROM Favorites f WHERE f.Username = '%s' AND f.TweetID = t.TweetID) as 'canFav', \
+    (SELECT COUNT(*) FROM Likes l WHERE l.Username = '%s' AND l.TweetID = t.TweetID) as 'canLike', \
+    (SELECT COUNT(*) FROM Likes WHERE TweetID = t.TweetID) as 'Likes' \
+    FROM TWEETS t \
+    INNER JOIN USERS u ON t.username = u.username \
+    WHERE t.username IN \
+        (SELECT f.user FROM Followers f WHERE f.follower = '%s') \
+        OR t.username = '%s' \
+        OR t.tweetID in (SELECT r.TweetID FROM RETWEETS r WHERE r.username = '%s')\
+        OR t.tweetID in (SELECT x.TweetID FROM Mentions x WHERE x.username = '%s')\
+    ORDER BY t.Created DESC LIMIT 50;" % (user.username, user.username, user.username, user.username, user.username, user.username, user.username,)
+
     tweets = get_data(sql)
     for i in tweets: i['img'] = gravatar_url(i['email'], 40)
 
     #get user info
+    
+    user.img = gravatar_url(user.email, 140)
+    return tweets, user
+
+def get_faves():
+    #get fave tweets
+
     user = get_user(g.user.username)
+    print "getting your favorites"
+    sql = "SELECT t.*, u.img, u.username, u.email \
+    FROM TWEETS t INNER JOIN USERS u on t.username = u.username \
+    WHERE t.TweetID in (SELECT f.TweetID FROM Favorites f where f.Username = '%s') \
+    ORDER BY t.Created DESC;" % user.username
+
+    tweets = get_data(sql)
+    for i in tweets: i['img'] = gravatar_url(i['email'], 40)
 
     user.img = gravatar_url(user.email, 140)
     return tweets, user
@@ -86,6 +115,20 @@ def create_tweet(tweet):
         if ".com" in word or ".net" in word or ".org" in word or ".co.uk" in word or ".biz" in word:
             sql = "call ADD_URL(%s, %s)" % (stringify(word), id,)
             exec_sql(sql)
+
+def retweet(username, tweetid):
+    sql = "CALL RETWEET(%s, %s)" % (stringify(username), tweetid,)
+    exec_sql(sql)
+
+def like(username, tweetid):
+    sql = "CALL LIKE_TWEET(%s, %s)" % (stringify(username), tweetid,)
+    exec_sql(sql)
+
+def favorite(username, tweetid):
+    print "fav..."
+    sql = "CALL ADD_FAVORITE(%s, %s)" % (stringify(username), tweetid,)
+    print "oriting..."
+    exec_sql(sql)
 
 def get_people_to_follow():
     sql = "SELECT * FROM USERS u WHERE u.Username NOT IN (SELECT f.User from FOLLOWERS f where f.Follower = %s) and u.Username != %s LIMIT 10;" % (stringify(g.user.username), stringify(g.user.username))

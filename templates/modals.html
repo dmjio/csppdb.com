@@ -1,17 +1,5 @@
  <script>
 
-$('#userModal').on('show', function () {
-            // clears everything
-            console.log('show')
-            $("#myusrModalLabel").text('');
-            $("#userweb").text('');
-            $("#userfirst").text('');
-            $("#userlast").text('');
-            $("#userblurb").text('');
-            $("#username").text('');
-
-});
-
  (function($) { 
 
 var urlizer = function(arg){
@@ -47,14 +35,14 @@ var imgizer = function(arg){
  </script>
 
 
- <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+ <div id="myModal" style="width:480px;" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             <h3 id="myModalLabel">New Tweet</h3>
         </div>
         <form action="{{ url_for('tweet') }}" method="POST">
         <div class="modal-body">
-            <input placeholder="Tweet goes here..." name="tweet" type="text" value="{{ request.form.tweet }}" />
+            <input style="width:400px;" placeholder="Tweet goes here... Use '#' to tag and '@' to mention" name="tweet" type="text" value="{{ request.form.tweet }}" />
         </div>
         <div class="modal-footer">
             <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>

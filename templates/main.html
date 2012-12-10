@@ -28,7 +28,7 @@
                     </thead>    
                 </table>
             </div>
-            <div class="span5">
+            <div class="span6">
                 <ul class="nav nav-pills">
                     <li class="active" ><a href="{{ url_for('main') }}">Feed</a></li>
                     <li><a href="{{ url_for('followers') }}">People that follow you</a></li>
@@ -41,15 +41,42 @@
                             <th>User</th>
                             <th>Tweet</th>
                             <th>Created</th>
+                            <th>Likes</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                     {%  for tweet in tweets %}
                         <tr>
-                            <td><img src="{{ tweet['img'] }}" class="img-rounded"></td>
+                <form class="form-horizontal" action="{{ url_for('action') }}" method="POST">
+
+                            <input type="hidden" name="tweetid" value="{{ tweet['TweetID']}}" />
+                            <input type="hidden" name="content" value="{{ tweet['Content']}}" />
+                            <td style="width:50px"><img style="width:50px" src="{{ tweet['img'] }}" class="img-rounded"></td>
                             <td><a class="userid" data-toggle="modal" href="#userModal">{{ tweet['Username'] }}</a></td>
                             <td>{{ tweet['Content'] }}</td>
                             <td>{{ tweet['Created'] }}</td>
+                            <td>{{ tweet['Likes']}} </td>
+                            <td>
+
+                            <div class="btn-group" style="width:140px;">
+                        {% if not tweet['canLike'] and tweet['Username'] != user.username %}
+                              <input value="Like" name="Like" type="submit" class="btn btn-warning" />
+                        {% else %}
+
+                        {% endif %}
+                         {% if not tweet['canRT'] and tweet['Username'] != user.username %}
+                              <input  value="RT" name="RT" type="submit" class="btn btn-primary" />
+                              {% else %}
+                        {% endif %}
+                         {% if not tweet['canFav'] and tweet['Username'] != user.username %}
+                              <input value="Fav" name="Fav" class="btn" type="submit" class="btn btn-danger" />
+                              {% else %}
+                        {% endif %}
+                            </div>
+
+                        </td>
+                        </form>
                         </tr>
                     {%  endfor %}
                     </tbody>

@@ -51,7 +51,6 @@ def before_request():
     if "username" in session:
         g.user = get_user(session['username'])
 
-
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
     """Logs the user in."""
@@ -98,6 +97,16 @@ def profile():
     follower_count, followee_count = get_follower_info()
     return render_template('profile.html', user=g.user, followercount = follower_count, followeecount = followee_count)
 
+@app.route('/favorites/', methods=['GET', 'POST'])
+def favorites():
+    print "in favorites"
+    check_auth()
+    tweets, g.user = get_faves()
+    g.user.img = gravatar_url(g.user.email, 140)
+    follower_count, followee_count = get_follower_info()
+    print "in favorites"
+    return render_template('favorites.html', user=g.user, tweets=tweets, followercount = follower_count, followeecount = followee_count)
+
 @app.route('/edit/', methods=['GET', 'POST'])
 def edit_profile():
     check_auth()
@@ -123,6 +132,35 @@ def main():
     g.user = user
     follower_count, followee_count = get_follower_info()
     return render_template('main.html', user=user, tweets=tweets, followercount = follower_count, followeecount = followee_count)
+
+@app.route('/action/', methods=['GET', 'POST'])
+def action():
+    check_auth()
+    print "ACTION"
+    print request.form
+    g.user = get_user(session['username'])
+    print "user..."
+    if request.method == 'POST':
+        print "in post.."
+        if 'Like' in request.form:
+            print "in like.."
+            like(g.user.username, request.form['tweetid'])
+            print "liked"
+            return redirect(url_for('main'))
+        if 'Fav' in request.form:
+            print "favoriting"
+            favorite(g.user.username, request.form['tweetid'])
+            print "favorited"
+            return redirect(url_for('favorites'))
+        if 'RT' in request.form:
+            print "in retweet"
+            retweet(g.user.username, request.form['tweetid'])
+            create_tweet(request.form['content'])
+            print "retweeted"
+            return redirect(url_for('main'))
+        print "i found nothing..."
+    return redirect(url_for('main'))
+
 
 @app.route('/userdata/', methods=['GET', 'POST'])
 def user_data():
@@ -196,7 +234,6 @@ def tweet():
     check_auth()
     if request.method == "POST": create_tweet(request.form['tweet'])
     return redirect(url_for('main'))
-
 
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
