@@ -1,10 +1,13 @@
 from flask.ext.mysql import MySQL
 import os
+from functools import update_wrapper 
 from flask import Flask, request, jsonify, session, url_for, redirect, \
-     render_template, g, flash
+     render_template, g, flash, make_response
 from data import *
 from werkzeug import check_password_hash, generate_password_hash
+from helpers import *
 import config
+
 
 app = Flask(__name__)
 mysql = MySQL()
@@ -28,7 +31,7 @@ def check_auth():
         g.user = get_user(session['username'])
         return
     return redirect(url_for('login'))
-    
+
 @app.route('/')
 def home(): 
     if 'username' in session: return redirect(url_for('main'))
@@ -276,7 +279,7 @@ def add_header(response):
     and also to cache the rendered page for 10 minutes.
     """
     response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
-    response.headers['Cache-Control'] = 'public, max-age=600'
+    response.headers['Cache-Control'] = 'public, max-age=0'
     return response
 
 
